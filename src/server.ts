@@ -7,7 +7,7 @@ import { Room } from "./core/room";
 import { RoomContext, RoomListContext, RoomPeersContext, PeerCursor } from "./core/class/roomContext";
 import { DBinit } from "./core/db";
 import { ObjectContext } from "./core/class/objectContext";
-import { logger } from "./core/logger";
+import { logger } from "./tools/logger";
 import { ImageContext } from "./core/class/imageContext";
 import { AudioContext } from "./core/class/audioContext";
 import multer from 'multer';

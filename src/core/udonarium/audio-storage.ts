@@ -1,5 +1,5 @@
 import { RoomDataContext } from "../class/roomContext";
-import { logger,debug } from "../logger";
+import { logger,debug } from "../../tools/logger";
 import { AudioContext } from "../class/audioContext";
 import { dirRemove } from "./storage";
 import fs from 'fs';

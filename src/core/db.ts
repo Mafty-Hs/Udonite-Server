@@ -1,7 +1,7 @@
 import { MongoClient} from "mongodb";
 import { ImageContext, ThumbnailContext } from "./class/imageContext";
 import { ObjectContext } from "./class/objectContext";
-import { logger } from "./logger";
+import { logger } from "../tools/logger";
 
 const sampleData:ObjectContext = {
   aliasName: "testdata",

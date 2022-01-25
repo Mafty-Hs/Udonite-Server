@@ -1,6 +1,6 @@
 import { ObjectStore } from "./object-store";
 import { RoomDataContext , PeerContext , PeerCursor} from "../class/roomContext";
-import { logger,debug } from "../logger";
+import { logger,debug } from "../../tools/logger";
 import { ImageStorage } from "./image-storage";
 import { AudioStorage } from "./audio-storage";
 

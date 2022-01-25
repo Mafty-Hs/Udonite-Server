@@ -1,6 +1,6 @@
 import { Collection, MongoClient, Document, WithId,ObjectId } from "mongodb";
 import { RoomDataContext } from "../class/roomContext";
-import { logger,debug } from "../logger";
+import { logger,debug } from "../../tools/logger";
 import { ImageContext , ThumbnailContext} from "../class/imageContext";
 import fs from 'fs';
 import sharp from "sharp";

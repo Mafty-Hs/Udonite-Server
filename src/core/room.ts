@@ -2,7 +2,7 @@ import { RoomContext,RoomInstance } from "./class/roomContext";
 import { RoomStore } from "./room-store"
 import { Udonarium } from "./udonarium/udonarium";
 import { DBcreate , DBdrop } from "./db";
-import { logger } from "./logger";
+import { logger } from "../tools/logger";
 import { dirRemove } from "./udonarium/storage";
 
 export class Room {
