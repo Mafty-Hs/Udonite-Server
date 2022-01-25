@@ -1,0 +1,16 @@
+server:
+  port: 8000 
+  url: 'https://localhost.example' 
+db:
+  ip: '127.0.0.1' 
+  port: 27017
+storage:
+  imageDataPath: '/localdata/image/'
+  imageUrlPath: 'https://localhost.example/image/'
+  imageStorageMaxSize: 10  #MBtyte
+  audioDataPath: '/localdata/audio/'
+  audioUrlPath: 'https://localhost.example/audio/'
+  audioStorageMaxSize: 50  #MBtyte
+setting: 
+  adminPassword: 'yourOwnPassword'
+  maxRoomCount: 10
