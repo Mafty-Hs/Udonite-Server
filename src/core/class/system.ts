@@ -32,8 +32,7 @@ export interface configYamlContext {
 
 export interface ServerInfo {
   version: string;
-  roomCount: number
-  maxRoomCount: number
+  maxRoomCount: number;
   adminPassword: string;
   imageStorageMaxSize: number;
   audioStorageMaxSize: number;

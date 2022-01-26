@@ -34,7 +34,7 @@ export class AudioStorage {
     let audioContext!:AudioContext;
     let url:string = ""
     try {
-      url = await this.upload(fileBuffer,type,hash)
+      url = await this.upload(fileBuffer,name,hash)
     }
     catch(error) {
       logger("Audio Upload Failed", error);
@@ -68,8 +68,8 @@ export class AudioStorage {
   }
 
 
-  private async upload(file :ArrayBuffer, type :string, hash :string) {
-    let filename = hash + '.' + type.substring(type.indexOf('/') + 1)
+  private async upload(file :ArrayBuffer, name :string, hash :string) {
+    let filename = hash + '.' + name.split('.').pop();
     let writePath = this.audioPath + "/" + filename;
     try {
       let writeStream = fs.createWriteStream(writePath);

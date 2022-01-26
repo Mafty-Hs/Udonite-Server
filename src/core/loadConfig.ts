@@ -1,4 +1,5 @@
 import config from 'config';
+import { getTextHash } from '../tools/file-tool';
 import { ConfigContext} from './class/system';
 
 export function loadConfig(): ConfigContext{
@@ -10,13 +11,14 @@ export function loadConfig(): ConfigContext{
   process.env.imageUrlPath =  String(yaml.get('storage.imageUrlPath'));
   process.env.audioDataPath =  String(yaml.get('storage.audioDataPath'));
   process.env.audioUrlPath =  String(yaml.get('storage.audioUrlPath'));
+  process.env.logFilePath =  String(yaml.get('log.filePath'));
 
   let result:ConfigContext =
    {
     port: yaml.get('server.port'),
     url:  yaml.get('server.url'),
     maxRoomCount: Number(yaml.get('setting.maxRoomCount')),
-    adminPassword: String(yaml.get('setting.adminPassword')),
+    adminPassword: getTextHash(String(yaml.get('setting.adminPassword'))),
     imageStorageMaxSize: Number(yaml.get('storage.imageStorageMaxSize')),
     audioStorageMaxSize: Number(yaml.get('storage.audioStorageMaxSize'))
   };

@@ -148,7 +148,6 @@ class Server {
   getServerInfo():ServerInfo {
     let info:ServerInfo = {
       version: String(process.env.npm_package_version), 
-      roomCount: this.list().length,
       maxRoomCount: this.config.maxRoomCount,
       adminPassword: this.config.adminPassword,
       imageStorageMaxSize: this.config.imageStorageMaxSize,
