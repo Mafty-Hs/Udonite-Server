@@ -2,7 +2,7 @@ import { RoomContext,RoomInstance } from "./class/roomContext";
 import { RoomStore } from "./room-store"
 import { Udonarium } from "./udonarium/udonarium";
 import { DBcreate , DBdrop } from "./db";
-import { logger } from "../tools/logger";
+import { systemLog , errorLog } from "../tools/logger";
 import { dirRemove } from "./udonarium/storage";
 
 export class Room {
@@ -20,7 +20,7 @@ export class Room {
     let instance = new Udonarium(room);
     if (!instance) throw "room wake up failed";
     this.roomInstance[roomId] = instance;
-    logger("room wake up :" + roomId); 
+    systemLog("room wake up",roomId); 
     return instance;
   }
  
@@ -28,7 +28,7 @@ export class Room {
     let roomId = this.roomStore.add(roomdata);
     let room = this.roomStore.read(roomId)
     await DBcreate(room.dbId);
-    logger("room create :" + roomId);
+    systemLog("room create",roomId);
     return roomId;
   }
 
@@ -42,7 +42,7 @@ export class Room {
   close(roomId :string) {
     this.roomInstance[roomId].close();
     delete this.roomInstance[roomId];
-    logger("room sleep :" + roomId);
+    systemLog("room sleep",roomId);
   }
 
   async remove(roomId :string) {
@@ -52,7 +52,7 @@ export class Room {
     if (room.audioId) dirRemove(<string>process.env.audioDataPath + room.audioId);
     DBdrop(room.dbId);
     this.roomStore.remove(roomId);
-    logger("room remove :" + roomId);
+    systemLog("room remove",roomId);
   }
 
 

@@ -16,6 +16,7 @@ export class RoomContext {
 }
 
 export interface RoomDataContext {
+  roomId: string;
   roomName: string;
   dbId: string ;
   imageId: string;

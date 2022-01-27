@@ -1,7 +1,7 @@
 import { MongoClient} from "mongodb";
 import { ImageContext, ThumbnailContext } from "./class/imageContext";
 import { ObjectContext } from "./class/objectContext";
-import { logger } from "../tools/logger";
+import { systemLog , errorLog } from "../tools/logger";
 
 const sampleData:ObjectContext = {
   aliasName: "testdata",
@@ -34,7 +34,7 @@ const defaultImage:ImageContext[] = [
 
 export async function DBinit() {
   let MongoUri = <string>process.env.db;
-  logger("MongoDB connection test");
+  systemLog("MongoDB connection test");
   if (!MongoUri) {
     throw "MongoDB config not Found";
     return
@@ -42,10 +42,10 @@ export async function DBinit() {
   let client!:MongoClient;
   try {
     client = await MongoClient.connect(MongoUri);
-    logger("MongoDB connection Successful");
+    systemLog("MongoDB connection Successful");
   }
   catch(error) {
-    logger("MongoDB connection Error");
+    errorLog("MongoDB connection Error");
     throw error;
   }
   finally {
@@ -62,13 +62,13 @@ export async function DBcreate(dbId :string) {
     const db = client.db(dbId);
     const objectStore = db.collection('ObjectStore');
     await objectStore.insertOne(sampleData);
-    await objectStore.createIndex('identifier');
+    await objectStore.createIndex({identifier: 1},{unique: true},);
     const imageStorage = db.collection('ImageStorage');
     await imageStorage.insertMany(defaultImage);
     await imageStorage.insertMany(defaultImage2);
   }
   catch(error) {
-    logger("MongoDB DB create Error",error);
+    errorLog("MongoDB DB create Error",'',error);
   }
   finally {
     if (client) client.close();
@@ -85,7 +85,7 @@ export async function DBdrop(dbId :string) {
     await db.dropDatabase();
   }
   catch(error) {
-    logger("MongoDB DB drop Error",error);
+    errorLog("MongoDB DB drop Error",'',error);
   }
   finally {
     if (client) client.close();

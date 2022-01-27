@@ -7,7 +7,7 @@ import { Room } from "./core/room";
 import { RoomContext, RoomListContext, RoomPeersContext, PeerCursor } from "./core/class/roomContext";
 import { DBinit } from "./core/db";
 import { ObjectContext } from "./core/class/objectContext";
-import { logger } from "./tools/logger";
+import { systemLog , errorLog } from "./tools/logger";
 import { ImageContext } from "./core/class/imageContext";
 import { AudioContext } from "./core/class/audioContext";
 import multer from 'multer';
@@ -39,7 +39,7 @@ class Server {
   async init() {
     process.on("exit", exitCode => {
       this.close();
-      logger("Udonite Shutdown");
+      systemLog("Udonite Shutdown");
     });
     process.on("SIGINT", ()=>process.exit(0));
     try {
@@ -47,10 +47,10 @@ class Server {
       await DBinit();
       this.iorouter();
       this.room = new Room(); 
-      this.httpd.listen(this.config.port, () => console.log("listening on *:" + this.config.port));
+      this.httpd.listen(this.config.port, () => systemLog("listening on *:" + this.config.port));
     }
     catch(error) {
-      logger("Udonite Init Error",error);
+      errorLog("Udonite Init Error",'',error);
       process.exit(-1);
     }
   }
@@ -59,11 +59,10 @@ class Server {
     this.server.on('connection', (peer: socketio.Socket) => {
       this.renew();
       if (peer.handshake.auth.token !== 'udonite') {
-        logger('invalid connection' ,peer)
-        peer.disconnect(true)
+        errorLog('invalid connection' ,'',peer);
+        peer.disconnect(true);
       }
       let info:ServerInfo = this.getServerInfo();
-      this.server.to(peer.id).emit('PeerId',peer.id);
       this.server.to(peer.id).emit('ServerInfo',info);
       this.roomSocket(peer);
       this.objectSocket(peer);
@@ -232,7 +231,7 @@ class Server {
           });
       }
       catch(error) {
-        logger("Room Create Error", error)
+        errorLog("Room Create Error",'', error);
         ack(-1);
       }
     });
@@ -245,12 +244,12 @@ class Server {
           ack(this.roomInfo(message.roomId));
         }
         catch(error) {
-          logger("Room Join Error", error)
+          errorLog("Room Join Error",message.roomId, error);
           ack(-1);
         }
       }
       else {
-        logger("Room Join infomation colapsed",message)
+        errorLog("Room Join infomation colapsed");
         ack(-1);
       }
     });
@@ -260,7 +259,7 @@ class Server {
         ack(message.roomId);
       }
       else {
-        logger("Room Remove Error",message)
+        errorLog("Room Remove Error",message.roomId)
         ack(-1);
       }
     });
@@ -272,7 +271,7 @@ class Server {
         ack(1);
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -282,7 +281,7 @@ class Server {
         ack(this.room.room(roomId).peerCursors);
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -313,12 +312,12 @@ class Server {
             });
         }
         catch(error) {
-          logger("ObjectUpdateError",error);
+          errorLog("ObjectUpdateError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -342,12 +341,12 @@ class Server {
             });
         }
         catch(error) {
-          logger("ObjectGetError",error);
+          errorLog("ObjectGetError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -363,13 +362,13 @@ class Server {
               throw error;
             });
         }
-         catch(error) {
-          logger("ObjectCatalogError",error);
+        catch(error) {
+          errorLog("ObjectCatalogError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -387,12 +386,12 @@ class Server {
             });
         }
         catch(error) {
-          logger("ObjectRemoveError",error);
+          errorLog("ObjectRemoveError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -410,7 +409,7 @@ class Server {
         ack(1);
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -420,7 +419,7 @@ class Server {
         ack(this.roomPeers[roomId]);
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -439,12 +438,12 @@ class Server {
             });
         }
         catch(error) {
-          logger("ImageMapError",error);
+          errorLog("ImageMapError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -464,12 +463,35 @@ class Server {
             });
         }
         catch(error) {
-          logger("ImageUpdateError",error);
+          errorLog("ImageUpdateError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
+        ack(-1);
+      }
+    });
+    peer.on("imageRemove",(identifier,ack) => {
+      let roomId = <string>this.ReverseRoomMap.get(peer.id);
+      if (roomId) {
+        try {
+          this.room.room(roomId).imageStorage.remove(identifier.identifier)
+            .then(() => {
+              this.server.to(roomId).emit('IMAGE_REMOVE', identifier.identifier);
+              ack(1);
+            })
+            .catch(error => {
+              throw error;
+            });
+        }
+        catch(error) {
+          errorLog("ImageRemoveError",roomId,error);
+          ack(-1);
+        }
+      }
+      else {
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -488,12 +510,12 @@ class Server {
             });
         }
         catch(error) {
-          logger("AudioMapError",error);
+          errorLog("AudioMapError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -513,12 +535,35 @@ class Server {
             });
         }
         catch(error) {
-          logger("AudioUpdateError",error);
+          errorLog("AudioUpdateError",roomId,error);
           ack(-1);
         }
       }
       else {
-        logger("User not join Room",peer.id);
+        errorLog(peer.id + " not join Room");
+        ack(-1);
+      }
+    });
+    peer.on("audioRemove",(identifier,ack) => {
+      let roomId = <string>this.ReverseRoomMap.get(peer.id);
+      if (roomId) {
+        try {
+          this.room.room(roomId).audioStorage.remove(identifier.identifier)
+            .then(() => {
+              this.server.to(roomId).emit('AUDIO_REMOVE', identifier.identifier);
+              ack(1);
+            })
+            .catch(error => {
+              throw error;
+            });
+        }
+        catch(error) {
+          errorLog("AudioRemoveError",roomId,error);
+          ack(-1);
+        }
+      }
+      else {
+        errorLog(peer.id + " not join Room");
         ack(-1);
       }
     });
@@ -527,7 +572,12 @@ class Server {
   close() {
     let rooms = Object.keys(this.roomPeers);
     for (let roomId of rooms) {
-      this.room.room(roomId).close();
+      try {
+        this.room.room(roomId).close();
+      }
+      catch(error) {
+        errorLog('Room Close Error',roomId,error)
+      }
     }
   }
 

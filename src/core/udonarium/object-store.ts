@@ -1,7 +1,7 @@
 import { Collection, MongoClient, Document, WithId,ObjectId } from "mongodb";
 import { RoomDataContext } from "../class/roomContext";
 import { ObjectContext,CatalogItem} from "../class/objectContext";
-import { logger,debug } from "../../tools/logger";
+import { systemLog , errorLog } from "../../tools/logger";
 
 export class ObjectStore {
   client!:MongoClient;
@@ -25,8 +25,7 @@ export class ObjectStore {
       await this.refreshMap();
     }
     catch(error) {
-      logger("Room Init Failed", error);
-      logger("DB",error);
+      errorLog("ObjectStore Init Failed",this.room.roomId, error);
     }
   }
 
@@ -41,15 +40,13 @@ export class ObjectStore {
 
     }
     catch(error) {
-      debug("Object Get Failed", error);
-      debug("ObjectIdentifier: ",objectIdentifier);
-      if (document)  debug("Object: ",document);
+      errorLog("ObjectStore get Failed",this.room.roomId, error);
     }
     return null;
   }
 
   async refreshMap() {
-    logger("ObjectMap Reflesh")
+    systemLog("ObjectMap Reflesh",this.room.roomId);
     try {
       if (!this.ObjectStore) {
         await this.waitLoad();
@@ -65,7 +62,7 @@ export class ObjectStore {
       this.reflesh = false;
     }
     catch(error) {
-      debug("ObjectMap reflesh Failed", error);
+      errorLog("ObjectMap reflesh Failed",this.room.roomId, error);
     }
   }
 
@@ -88,9 +85,8 @@ export class ObjectStore {
       document = await this.ObjectStore.findOne({identifier:  objectIdentifier});
     }
     catch(error) {
-      debug("Object verify Failed", error);
-      debug("ObjectIdentifier: ",objectIdentifier);
-      debug("Object: ",context);
+      errorLog("Object verify Failed",this.room.roomId, error);
+      errorLog("Object",this.room.roomId, context);
     }
     if (document) {
       if (context.majorVersion + context.minorVersion < (<Document>document).majorVersion + (<Document>document).minorVersion  ) {
@@ -101,9 +97,8 @@ export class ObjectStore {
         this.ObjectMap.set(objectIdentifier,{identifier: objectIdentifier ,version: context.majorVersion + context.minorVersion});
       }
       catch(error) {
-        debug("Object Update Failed", error);
-        debug("ObjectIdentifier: ",objectIdentifier);
-        debug("Object: ",context);
+        errorLog("Object update Failed",this.room.roomId, error);
+        errorLog("Object",this.room.roomId, context);
       }
     }
     else {
@@ -112,9 +107,8 @@ export class ObjectStore {
         this.ObjectMap.set(objectIdentifier,{identifier: objectIdentifier ,version: context.majorVersion + context.minorVersion});
       }
       catch(error) {
-        debug("Object Create Failed", error);
-        debug("ObjectIdentifier: ",objectIdentifier);
-        debug("Object: ",context);
+        errorLog("Object create Failed",this.room.roomId, error);
+        errorLog("Object",this.room.roomId, context);
       }
     }
     if (!this.reflesh)this.shoudReflesh = true;
@@ -128,8 +122,8 @@ export class ObjectStore {
       this.ObjectMap.delete(objectIdentifier);
     }
     catch(error) {
-      debug("Object Delete Failed", error);
-      debug("ObjectIdentifier: ",objectIdentifier);
+      errorLog("Object Delete Failed",this.room.roomId, error);
+      errorLog("Object",this.room.roomId, objectIdentifier);
     }
   }
 
@@ -142,7 +136,7 @@ export class ObjectStore {
       }
     }
     catch(error) {
-      debug("AllObject Get Failed", error);
+      errorLog("AllObject Get Failed",this.room.roomId, error);
     }
     return result;
   }
@@ -187,7 +181,7 @@ export class ObjectStore {
           syncData: {}
         }
       }
-      logger("Document Cast Failed", doc);
+      errorLog("Document Cast Failed",this.room.roomId, doc);
     }
     return object;
   }

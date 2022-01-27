@@ -1,9 +1,10 @@
 import config from 'config';
 import { getTextHash } from '../tools/file-tool';
 import { ConfigContext} from './class/system';
+import { systemLog , errorLog } from "../tools/logger";
 
 export function loadConfig(): ConfigContext{
-  console.log("loading config");
+  systemLog("loading config");
   let yaml = config;
   process.env.NODE_ENV = "UdoniteServer";
   process.env.db = dbUri(yaml.get('db.ip'),yaml.get('db.port')); 
@@ -23,7 +24,7 @@ export function loadConfig(): ConfigContext{
     audioStorageMaxSize: Number(yaml.get('storage.audioStorageMaxSize'))
   };
 
-  console.log("config load end");
+  systemLog("config load end");
   return result;
 }
 

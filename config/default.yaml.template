@@ -7,7 +7,7 @@ db:
 storage:
   imageDataPath: '/localdata/image/'
   imageUrlPath: 'https://localhost.example/image/'
-  imageStorageMaxSize: 10  #MBtyte
+  imageStorageMaxSize: 50  #MBtyte
   audioDataPath: '/localdata/audio/'
   audioUrlPath: 'https://localhost.example/audio/'
   audioStorageMaxSize: 50  #MBtyte

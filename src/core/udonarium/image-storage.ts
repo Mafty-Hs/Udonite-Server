@@ -1,7 +1,8 @@
 import { Collection, MongoClient, Document, WithId,ObjectId } from "mongodb";
 import { RoomDataContext } from "../class/roomContext";
-import { logger,debug } from "../../tools/logger";
+import { systemLog , errorLog } from "../../tools/logger";
 import { ImageContext , ThumbnailContext} from "../class/imageContext";
+import { fileRemove } from "./storage";
 import fs from 'fs';
 import sharp from "sharp";
 
@@ -30,8 +31,7 @@ export class ImageStorage {
       await this.load();
     }
     catch(error) {
-      logger("Room Init Failed", error);
-      logger("DB",error);
+      errorLog("Room Init Failed",this.room.roomId,error);
     }
   }
 
@@ -59,7 +59,7 @@ export class ImageStorage {
       this.ImageMap.set(imageContext.identifier, imageContext);
     } 
     catch(error) {
-      logger("Image Create Error",error);
+      errorLog("Image Create Error",this.room.roomId,error);
     }
     return imageContext;
   }
@@ -70,7 +70,7 @@ export class ImageStorage {
       this.ImageMap.set(context.identifier, context);
     }
     catch(error) {
-      logger("Image Update Error",error);
+　　　errorLog("Image Update Error",this.room.roomId,error);
     }
     return context;
   }
@@ -86,13 +86,21 @@ export class ImageStorage {
     return imageMap;
   }
 
+  async remove(identifier:string):Promise<void> {
+    if (!this.ImageMap.has(identifier)) return;
+    let url = <string>this.ImageMap.get(identifier)?.url
+    let filepath = this.imagePath + "/" + url.substring(this.imageUrl.length + 1)
+    fileRemove(filepath);
+    this.ImageMap.delete(identifier); 
+  }
+
   async waitLoad() {
     if (this.ImageMap) return;
-    logger("imageMap now loading! wait" ,this.room.roomName);
+    systemLog("imageMap now loading! wait" ,this.room.roomId);
     while (!this.ImageMap) {
       await new Promise(resolve => setTimeout(resolve, 200))
     }
-    logger("imageMap wait end" ,this.room.roomName);
+    systemLog("imageMap wait end" ,this.room.roomId);
     return;
   }
 
@@ -107,7 +115,7 @@ export class ImageStorage {
       })  
     }
     catch(error) {
-      logger("image write error",error)
+      errorLog("image write error",this.room.roomId,error)
       return "";
     }
     return this.imageUrl + "/" + filename;
@@ -133,7 +141,7 @@ export class ImageStorage {
 
   async load() {
     let tempMap = new Map<string,ImageContext>();
-    logger("imageMap load start" ,this.room.roomName);
+    systemLog("imageMap load start" ,this.room.roomId);
     try {
       let alldocument = await this.imageStorage.find().toArray();
       for (let document of alldocument) {
@@ -152,9 +160,9 @@ export class ImageStorage {
       }
     }
     catch(error) {
-      logger("imageMap load error" ,error);
+      errorLog("imageMap load error" , this.room.roomId,error);
     }
-    logger("imageMap load end" ,this.room.roomName);
+    systemLog("imageMap load end" ,this.room.roomId);
     this.ImageMap = tempMap;
     return;
   }

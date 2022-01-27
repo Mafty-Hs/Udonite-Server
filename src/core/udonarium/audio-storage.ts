@@ -1,8 +1,9 @@
 import { RoomDataContext } from "../class/roomContext";
-import { logger,debug } from "../../tools/logger";
+import { systemLog , errorLog } from "../../tools/logger";
 import { AudioContext } from "../class/audioContext";
-import { dirRemove } from "./storage";
+import { dirRemove, fileRemove } from "./storage";
 import fs from 'fs';
+import { ReturnDocument } from "mongodb";
 
 export class AudioStorage {
   room!:RoomDataContext;
@@ -25,7 +26,7 @@ export class AudioStorage {
       if ( !fs.existsSync( this.audioPath )) fs.mkdirSync(this.audioPath);
     }
     catch(error) {
-      logger("Room Init Failed", error);
+      errorLog("Room Init Failed",this.room.roomId, error);
     }
   }
 
@@ -37,7 +38,7 @@ export class AudioStorage {
       url = await this.upload(fileBuffer,name,hash)
     }
     catch(error) {
-      logger("Audio Upload Failed", error);
+      errorLog("Audio Upload Failed",this.room.roomId ,error);
       return;
     }
     audioContext = {
@@ -57,6 +58,14 @@ export class AudioStorage {
   async update(context :AudioContext):Promise<AudioContext> {
     this.audioMap.set(context.identifier, context);
     return context;
+  }
+
+  async remove(identifier:string):Promise<void> {
+    if (!this.audioMap.has(identifier)) return;
+    let url = <string>this.audioMap.get(identifier)?.url
+    let filepath = this.audioPath + "/" + url.substring(this.audioUrl.length + 1)
+    fileRemove(filepath);
+    this.audioMap.delete(identifier); 
   }
 
   async getMap():Promise<AudioContext[]> {
@@ -79,7 +88,7 @@ export class AudioStorage {
       })  
     }
     catch(error) {
-      logger("audio write error",error)
+      errorLog("audio write error",this.room.roomId,error)
       return "";
     }
     return this.audioUrl + "/" + filename;

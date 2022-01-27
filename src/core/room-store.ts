@@ -21,6 +21,7 @@ export class RoomStore {
   add(room :RoomContext):string {
     let roomId = randomUUID();
     this._roomStore[roomId] = {
+      roomId: roomId,
       roomName: room.roomName,
       dbId: randomUUID(),
       imageId: randomUUID(),
