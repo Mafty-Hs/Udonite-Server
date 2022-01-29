@@ -52,7 +52,7 @@ export class ImageStorage {
         thumbnail: thumbnailContext,
         filesize: Number(filesize),
         isHide: (owner === "SYSTEM"),
-        owner: owner,
+        owner: [owner],
         tag: []
       };
       await this.imageStorage.insertOne(imageContext);

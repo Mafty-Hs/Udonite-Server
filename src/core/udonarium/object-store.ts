@@ -23,6 +23,7 @@ export class ObjectStore {
       this.ObjectStore = this.client.db(dbId).collection('ObjectStore');
       let num = await this.ObjectStore.countDocuments();
       await this.refreshMap();
+      await this.delete('Jukebox');
     }
     catch(error) {
       errorLog("ObjectStore Init Failed",this.room.roomId, error);

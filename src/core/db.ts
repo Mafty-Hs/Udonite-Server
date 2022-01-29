@@ -19,16 +19,16 @@ const sampleData:ObjectContext = {
 };
 const systemThumnail:ThumbnailContext = {type: "" , url: ""}
 const defaultImage:ImageContext[] = [
-  { identifier: "none_icon" , type: "/.png", url: "./assets/images/ic_account_circle_black_24dp_2x.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default","アイコン"] },
-  { identifier: "stand_no_image" , type: "/.png", url: "./assets/images/nc96424.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default","スタンド"] },
-  { identifier: "testTableBackgroundImage_image" , type: "/.jpg", url: "./assets/images/BG10a_80.jpg", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default","テーブル"] },
-  { identifier: "skelton" , type: "/.png", url: "./assets/images/skeleton.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] },
-  { identifier: "./assets/images/tex.jpg" , type: "/.jpg", url: "./assets/images/tex.jpg", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] },
-  { identifier: "./assets/images/dice/2_coin/2_coin[表].png" , type: "/.png", url: "./assets/images/dice/2_coin/2_coin[表].png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] },
-  { identifier: "./assets/images/dice/2_coin/2_coin[裏].png" , type: "/.png", url: "./assets/images/dice/2_coin/2_coin[裏].png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] },
-  { identifier: "./assets/images/trump/blank_card.png" , type: "/.png", url: "./assets/images/trump/blank_card.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] },
-  { identifier: "./assets/images/trump/z01.gif" , type: "/.gif", url: "./assets/images/trump/z01.gif", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] },
-  { identifier: "./assets/images/trump/z02.gif" , type: "/.gif", url: "./assets/images/trump/z02.gif", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] }
+  { identifier: "none_icon" , type: "/.png", url: "./assets/images/ic_account_circle_black_24dp_2x.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default","アイコン"] },
+  { identifier: "stand_no_image" , type: "/.png", url: "./assets/images/nc96424.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default","スタンド"] },
+  { identifier: "testTableBackgroundImage_image" , type: "/.jpg", url: "./assets/images/BG10a_80.jpg", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default","テーブル"] },
+  { identifier: "skelton" , type: "/.png", url: "./assets/images/skeleton.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] },
+  { identifier: "./assets/images/tex.jpg" , type: "/.jpg", url: "./assets/images/tex.jpg", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] },
+  { identifier: "./assets/images/dice/2_coin/2_coin[表].png" , type: "/.png", url: "./assets/images/dice/2_coin/2_coin[表].png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] },
+  { identifier: "./assets/images/dice/2_coin/2_coin[裏].png" , type: "/.png", url: "./assets/images/dice/2_coin/2_coin[裏].png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] },
+  { identifier: "./assets/images/trump/blank_card.png" , type: "/.png", url: "./assets/images/trump/blank_card.png", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] },
+  { identifier: "./assets/images/trump/z01.gif" , type: "/.gif", url: "./assets/images/trump/z01.gif", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] },
+  { identifier: "./assets/images/trump/z02.gif" , type: "/.gif", url: "./assets/images/trump/z02.gif", thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] }
 ]
 
 
@@ -101,7 +101,7 @@ function makeImageContext():ImageContext[] {
     for (let face = 1; face < facenum + 1 ; face++){
       let url: string = `./assets/images/dice/${imagePathPrefix}/${imagePathPrefix}[${face}].png`;
       let context:ImageContext = 
-      { identifier: url , type: "/.png", url: url, thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] };
+      { identifier: url , type: "/.png", url: url, thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] };
       output.push(context);
     }
   }
@@ -117,7 +117,7 @@ function makeImageContext():ImageContext[] {
   for (let trump of trumps) {
     let url: string = './assets/images/trump/' + trump + '.gif';
     let context:ImageContext = 
-      { identifier: url , type: "/.gif", url: url, thumbnail: systemThumnail, filesize: 0, isHide: true, owner: "SYSTEM", tag: ["default"] };
+      { identifier: url , type: "/.gif", url: url, thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] };
       output.push(context);
   }
   return output;
