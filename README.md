@@ -33,7 +33,7 @@ linux（開発環境はCentOS7.9）
   
 Udonite-Server自身の設置フォルダはWEBで公開しないでください  
   
-ファイルの準備
+ファイルの準備  
  $git clone https://github.com/Mafty-Hs/Udonite-Server  
  $cd Udonite-Server  
  $npm install  
