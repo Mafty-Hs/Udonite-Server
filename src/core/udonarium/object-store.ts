@@ -47,7 +47,6 @@ export class ObjectStore {
   }
 
   async refreshMap() {
-    systemLog("ObjectMap Reflesh",this.room.roomId);
     try {
       if (!this.ObjectStore) {
         await this.waitLoad();

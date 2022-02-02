@@ -1,8 +1,9 @@
 import { ObjectStore } from "./object-store";
-import { RoomDataContext , PeerContext , PeerCursor} from "../class/roomContext";
+import { RoomDataContext , PeerContext , PeerCursor, RoomControl, Round} from "../class/roomContext";
 import { systemLog , errorLog } from "../../tools/logger";
 import { ImageStorage } from "./image-storage";
 import { AudioStorage } from "./audio-storage";
+import { readRoomData ,writeRoomData } from "../db";
 
 export class Udonarium {
   ObjectStore!:ObjectStore;
@@ -11,10 +12,27 @@ export class Udonarium {
   room!:RoomDataContext;
   timeoutId!:NodeJS.Timer;
   peerCursorList:PeerContext = {};
+  roomControl:RoomControl = new RoomControl();
+  round:Round = new Round();
 
   constructor(room :RoomDataContext) {
     if (!this.dataCheck(room)) throw room;
     this.room = room;
+    let admin = readRoomData(this.room.dbId,"RoomAdmin")
+      .then(admin => {
+        if (admin) this.roomControl = <RoomControl>admin;
+      })
+      .catch((error) => {
+        throw error;
+      });
+    let round = readRoomData(this.room.dbId,"Round")
+      .then(round => {
+        if (round) this.round = <Round>round;
+      })
+      .catch((error) => {
+        throw error;
+      });
+    Promise.all([admin,round])
     this.ObjectStore = new ObjectStore(room);
     this.imageStorage = new ImageStorage(room);
     this.audioStorage = new AudioStorage(room);
@@ -41,6 +59,23 @@ export class Udonarium {
     delete this.peerCursorList[peerId];
   }
 
+  async setRoomAdmin(object :RoomControl):Promise<void> {
+    this.roomControl = object;
+    await writeRoomData(this.room.dbId,"RoomAdmin",object)
+    return;
+  }
+  readRoomAdmin():RoomControl {
+    return this.roomControl;
+  }
+
+  async setRound(object :Round):Promise<void> {
+    this.round = object;
+    await writeRoomData(this.room.dbId,"Round",object)
+    return;
+  }
+  readRound():Round {
+    return this.round;
+  }
 
   close() {
     this.ObjectStore.close;

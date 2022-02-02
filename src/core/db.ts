@@ -1,4 +1,4 @@
-import { MongoClient} from "mongodb";
+import { MongoClient ,WithId ,Document} from "mongodb";
 import { ImageContext, ThumbnailContext } from "./class/imageContext";
 import { ObjectContext } from "./class/objectContext";
 import { systemLog , errorLog } from "../tools/logger";
@@ -92,6 +92,51 @@ export async function DBdrop(dbId :string) {
   }
   return;
 }
+
+export async function writeRoomData(dbId: string , identifier:string ,data: object):Promise<void> {
+  let MongoUri = <string>process.env.db;
+  let client!:MongoClient;
+  try {
+    client = await MongoClient.connect(MongoUri);
+    const db = client.db(dbId);
+    const room = db.collection('room');
+    await room.replaceOne({identifier:  identifier},data,{upsert:true});
+  }
+  catch(error) {
+    errorLog("MongoDB DB collection write Error",'',error);
+  }
+  finally {
+    if (client) client.close();
+  }
+  return;
+}
+
+export async function readRoomData(dbId: string , identifier:string ):Promise<object|null> {
+  let MongoUri = <string>process.env.db;
+  let client!:MongoClient;
+  let object!:object;
+  try {
+    client = await MongoClient.connect(MongoUri);
+    const db = client.db(dbId);
+    const room = db.collection('room');
+    let document = await room.findOne({identifier:  identifier});
+    if (document) {
+      let {_id, ...newObject} = <Document>document
+      object = <object>newObject;
+    }
+  }
+  catch(error) {
+    errorLog("MongoDB DB collection read Error",'',error);
+  }
+  finally {
+    if (client) client.close();
+  }
+  if (object) {
+    return object;
+  }
+  return null;
+}
+
 
 function makeImageContext():ImageContext[] {
   let output:ImageContext[] = [];

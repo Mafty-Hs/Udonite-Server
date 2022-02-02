@@ -31,6 +31,29 @@ linux（開発環境はCentOS7.9）
   
 ## 初期セットアップ手順  
   
+Udonite-Server自身の設置フォルダはWEBで公開しないでください  
+  
+ファイルの準備
+ $git clone https://github.com/Mafty-Hs/Udonite-Server  
+ $cd Udonite-Server  
+ $npm install  
+ $cp config/default.yaml.template config/default.yaml  
+  
+画像・音楽データ公開フォルダの作成  
+  
+ $ mkdir /vaw/www/html/image  
+ $ mkdir /vaw/www/html/audio  
+  
+ パスは各自の環境にあわせ変更してください。  
+ また、Udonite-Server実行ユーザーが上記のフォルダに書き込めるように権限を付与してください  
+ またWebで上記フォルダに直接アクセスできるように設定します  
+  
+configの設定  
+ 詳細は後述  
+  
+実行  
+  $npm start
+
 ## コンフィグの説明  
 server:  
   port: 8000  ← サーバがlistenするポート 0.0.0.0：portでlistenします  
@@ -48,4 +71,6 @@ storage:
 setting:   
   adminPassword: 'yourOwnPassword' ← サーバ設置者がルームを強制削除するためのパスワード  
   maxRoomCount: 10 ← 最大ルーム数  
+log:  
+  filePath: './log/udonite.log' ← ログの保存先    
    

@@ -96,6 +96,7 @@ export class AudioStorage {
 
 
   close() {
+    console.log(this.audioPath);
     dirRemove(this.audioPath);
   }
 

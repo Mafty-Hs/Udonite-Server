@@ -4,7 +4,7 @@ import * as http from "http";
 import * as socketio from "socket.io";
 import { loadConfig } from "./core/loadConfig";
 import { Room } from "./core/room";
-import { RoomContext, RoomListContext, RoomPeersContext, PeerCursor } from "./core/class/roomContext";
+import { RoomContext, RoomListContext, RoomPeersContext, PeerCursor, RoomControl, Round } from "./core/class/roomContext";
 import { DBinit } from "./core/db";
 import { ObjectContext } from "./core/class/objectContext";
 import { systemLog , errorLog } from "./tools/logger";
@@ -164,7 +164,8 @@ class Server {
         roomName: room.roomName,
         roomId: room.roomId,
         password: room.password,
-        isOpen: room.isOpen,
+        lastAccess: room.lastAccess,
+        isOpen: Boolean(this.room.roomInstance[roomId]),
         is2d: room.is2d,
         players: 0
       } as RoomListContext;
@@ -173,6 +174,7 @@ class Server {
       roomName: "",
       roomId: "",
       password: "",
+      lastAccess: 0,
       isOpen: true,
       is2d: false,
       players:  0
@@ -185,7 +187,8 @@ class Server {
         roomName: room.roomName,
         roomId: room.roomId,
         password: room.password,
-        isOpen: room.isOpen,
+        lastAccess: room.lastAccess,
+        isOpen: Boolean(this.room.roomInstance[room.roomId]),
         is2d: room.is2d,
         players: (this.roomPeers[room.roomId]) ? this.roomPeers[room.roomId].length : 0
       } as RoomListContext;
@@ -207,6 +210,7 @@ class Server {
     if (this.room.roomInstance[roomId] && this.room.roomInstance[roomId]?.timeoutId) {
       clearTimeout(this.room.roomInstance[roomId].timeoutId);
     }
+    this.room.roomStore.dateUpdate(roomId);
     return roomId;
   }
   remove(roomId :string) {
@@ -290,6 +294,7 @@ class Server {
       let roomId = <string>this.ReverseRoomMap.get(peer.id); 
       if (roomId) {
         peer.leave(roomId);
+        this.room.roomStore.dateUpdate(roomId);
         this.room.room(roomId).removePeer(peer.id);
         peer.to(roomId).emit('PEER_LIEVE', peer.id);
         this.ReverseRoomMap.delete(peer.id)
@@ -354,6 +359,7 @@ class Server {
       let roomId = <string>this.ReverseRoomMap.get(peer.id);
       if (roomId) {
         try {
+          this.room.roomStore.dateUpdate(roomId);
           this.room.room(roomId).ObjectStore.getCatalog()
             .then(catalog => {
               ack(catalog);
@@ -387,6 +393,82 @@ class Server {
         }
         catch(error) {
           errorLog("ObjectRemoveError",roomId,error);
+          ack(-1);
+        }
+      }
+      else {
+        errorLog(peer.id + " not join Room");
+        ack(-1);
+      }
+    });
+    peer.on("setAdmin",(control :RoomControl,ack) => {
+      let roomId =  <string>this.ReverseRoomMap.get(peer.id);
+      if (roomId && control) {
+        try {
+          this.room.room(roomId).setRoomAdmin(control)
+            .then(() => {
+              peer.to(roomId).emit('UPDATE_ROOMADMIN', control);
+            })
+             .catch(error => {
+              throw error;
+            });
+        }
+        catch(error) {
+          errorLog("RoomAdmin Set Error",roomId,error);
+          ack(-1);
+        }
+      }
+      else {
+        errorLog(peer.id + " not join Room");
+        ack(-1);
+      }
+    });
+    peer.on("getAdmin",(message,ack) => {
+      let roomId =  <string>this.ReverseRoomMap.get(peer.id);
+      if (roomId) {
+        try {
+          ack(this.room.room(roomId).readRoomAdmin())
+        }
+        catch(error) {
+          errorLog("RoomAdmin Get Error",roomId,error);
+          ack(-1);
+        }
+      }
+      else {
+        errorLog(peer.id + " not join Room");
+        ack(-1);
+      }
+    });
+    peer.on("setRound",(round :Round,ack) => {
+      let roomId =  <string>this.ReverseRoomMap.get(peer.id);
+      if (roomId && round) {
+        try {
+          this.room.room(roomId).setRound(round)
+            .then(() => {
+              peer.to(roomId).emit('UPDATE_ROUND', round);
+            })
+             .catch(error => {
+              throw error;
+            });
+        }
+        catch(error) {
+          errorLog("Round Get Error",roomId,error);
+          ack(-1);
+        }
+      }
+      else {
+        errorLog(peer.id + " not join Room");
+        ack(-1);
+      }
+    });
+    peer.on("getRound",(message,ack) => {
+      let roomId =  <string>this.ReverseRoomMap.get(peer.id);
+      if (roomId) {
+        try {
+          ack(this.room.room(roomId).readRound())
+        }
+        catch(error) {
+          errorLog("Round Set Error",roomId,error);
           ack(-1);
         }
       }

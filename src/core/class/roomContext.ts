@@ -18,6 +18,7 @@ export class RoomContext {
 export interface RoomDataContext {
   roomId: string;
   roomName: string;
+  lastAccess: number;
   dbId: string ;
   imageId: string;
   audioId: string;
@@ -30,6 +31,7 @@ export class RoomListContext {
   roomName: string = '';
   roomId: string = ''
   password: string = '';
+  lastAccess: number = 0;
   isOpen: boolean = false;
   is2d: boolean = false;
   players: number = 0;
@@ -43,3 +45,32 @@ export interface PeerCursor {
   peerId :string;
   playerIdentifier :string;
 } 
+
+export class RoomControl {
+  identifier = "RoomAdmin";
+  adminPlayer:string[] = [];
+  disableRoomLoad:boolean = false;
+  disableObjectLoad:boolean = false;
+  disableTabletopLoad:boolean = false;
+  disableImageLoad:boolean = false;
+  disableAudioLoad:boolean = false;
+  disableTableSetting:boolean = false;
+  disableTabSetting:boolean = false;
+  disableAllDataSave:boolean = false;
+  disableSeparateDataSave:boolean = false;
+  gameType:string = "";
+  templateCharacter:string = "";
+  chatTab:string = "";
+  diceLog:boolean = false;
+  cardLog:boolean = false;
+}
+
+export class Round {
+  identifier = "Round";
+  count:number = 0;
+  tabIdentifier:string = "";
+  isInitiative:boolean = false;;
+  currentInitiative:number = -1;
+  roundState:number = 0;
+  initName:string = "";
+}

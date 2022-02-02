@@ -23,6 +23,7 @@ export class RoomStore {
     this._roomStore[roomId] = {
       roomId: roomId,
       roomName: room.roomName,
+      lastAccess: Date.now(),
       dbId: randomUUID(),
       imageId: randomUUID(),
       audioId: randomUUID(),
@@ -32,6 +33,11 @@ export class RoomStore {
     };
     this.save();
     return roomId;
+  }
+
+  dateUpdate(roomId :string):void {
+    this._roomStore[roomId].lastAccess = Math.floor(Date.now() / 1000);
+    this.save();
   }
 
   read(roomId :string):RoomDataContext {
@@ -52,6 +58,7 @@ export class RoomStore {
         return  {
           roomId: roomId,
           roomName: room.roomName,
+          lastAccess: room.lastAccess,
           password: room.password,
           isOpen: room.isOpen,
           is2d: room.is2d
