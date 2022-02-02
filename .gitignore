@@ -1,4 +1,4 @@
 *.yaml
-*.json
+roomstore.json
 *.log
 node_modules/
