@@ -242,6 +242,7 @@ class Server {
     peer.on("roomJoin",(message,ack) => {
       if (message.roomId) {
         try {
+          if (!this.room.isRoomExist(message.roomId)) throw "no room";
           peer.join(message.roomId);
           this.ReverseRoomMap.set(peer.id ,message.roomId)
           this.join(message.roomId,peer.id);

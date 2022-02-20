@@ -13,6 +13,10 @@ export class Room {
   roomStore:RoomStore = new RoomStore();
   roomInstance:RoomInstance = {};
 
+  isRoomExist(roomId :string):boolean {
+    return Boolean(this.roomStore.read(roomId));
+  }
+
   room(roomId :string):Udonarium {
     if (this.roomInstance[roomId]) return this.roomInstance[roomId];
     let room =  this.roomStore.read(roomId);
