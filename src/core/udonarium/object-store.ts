@@ -162,8 +162,8 @@ export class ObjectStore {
         identifier: doc.identifier,
         majorVersion: doc.majorVersion,
         minorVersion: doc.minorVersion,
-        parentIdentifier: doc.parentIdentifier,
-        context: doc.context
+        syncData: doc.syncData
+        
       }
     }
     catch {
@@ -172,14 +172,7 @@ export class ObjectStore {
         identifier: "",
         majorVersion: 0,
         minorVersion: 0,
-        parentIdentifier: "",
-        context: {
-          aliasName: "",
-          identifier: "",
-          majorVersion: 0,
-          minorVersion: 0,
-          syncData: {}
-        }
+        syncData: {}
       }
       errorLog("Document Cast Failed",this.room.roomId, doc);
     }

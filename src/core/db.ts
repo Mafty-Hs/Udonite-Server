@@ -8,14 +8,7 @@ const sampleData:ObjectContext = {
   identifier: "testdata",
   majorVersion: 1,
   minorVersion: 0,
-  parentIdentifier: "",
-  context: {
-    aliasName: "",
-    identifier: "",
-    majorVersion: 0,
-    minorVersion: 0,
-    syncData: {}
-  }
+  syncData: {}
 };
 const systemThumnail:ThumbnailContext = {type: "" , url: ""}
 const defaultImage:ImageContext[] = [
