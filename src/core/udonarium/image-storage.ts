@@ -55,7 +55,17 @@ export class ImageStorage {
         owner: [owner],
         tag: []
       };
-      await this.imageStorage.insertOne(imageContext);
+      let newDocument:Document =  {
+        identifier: hash ,
+        type: type,
+        url: url,
+        thumbnail: thumbnailContext,
+        filesize: Number(filesize),
+        isHide: (owner === "SYSTEM"),
+        owner: [owner],
+        tag: []
+      };
+      await this.imageStorage.insertOne(newDocument);
       this.ImageMap.set(imageContext.identifier, imageContext);
     } 
     catch(error) {
@@ -70,7 +80,7 @@ export class ImageStorage {
       this.ImageMap.set(context.identifier, context);
     }
     catch(error) {
-　　　errorLog("Image Update Error",this.room.roomId,error);
+      errorLog("Image Update Error",this.room.roomId,error);
     }
     return context;
   }
@@ -92,6 +102,7 @@ export class ImageStorage {
     let filepath = this.imagePath + "/" + url.substring(this.imageUrl.length + 1)
     fileRemove(filepath);
     this.ImageMap.delete(identifier); 
+    this.imageStorage.deleteOne({identifier: identifier});
   }
 
   async waitLoad() {

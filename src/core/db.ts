@@ -59,6 +59,7 @@ export async function DBcreate(dbId :string) {
     const imageStorage = db.collection('ImageStorage');
     await imageStorage.insertMany(defaultImage);
     await imageStorage.insertMany(defaultImage2);
+    await imageStorage.createIndex({identifier: 1},{unique: true},);
   }
   catch(error) {
     errorLog("MongoDB DB create Error",'',error);
