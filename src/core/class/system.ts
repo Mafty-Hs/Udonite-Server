@@ -2,6 +2,7 @@ export interface ConfigContext  {
   port: number ,
   url: string ,
   maxRoomCount: number;
+  roomPerPage: number;
   adminPassword: string;
   imageStorageMaxSize: number;
   audioStorageMaxSize: number;
@@ -33,6 +34,7 @@ export interface configYamlContext {
 export interface ServerInfo {
   version: string;
   maxRoomCount: number;
+  roomPerPage: number;
   adminPassword: string;
   imageStorageMaxSize: number;
   audioStorageMaxSize: number;

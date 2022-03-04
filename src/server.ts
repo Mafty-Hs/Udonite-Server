@@ -148,6 +148,7 @@ class Server {
     let info:ServerInfo = {
       version: String(process.env.npm_package_version), 
       maxRoomCount: this.config.maxRoomCount,
+      roomPerPage: this.config.roomPerPage,
       adminPassword: this.config.adminPassword,
       imageStorageMaxSize: this.config.imageStorageMaxSize,
       audioStorageMaxSize: this.config.audioStorageMaxSize
@@ -161,6 +162,7 @@ class Server {
     );
     if (room) {
       return  {
+        roomNo: room.roomNo,
         roomName: room.roomName,
         roomId: room.roomId,
         password: room.password,
@@ -171,6 +173,7 @@ class Server {
       } as RoomListContext;
     }
     return {
+      roomNo: NaN,
       roomName: "",
       roomId: "",
       password: "",
@@ -184,6 +187,7 @@ class Server {
   list():RoomListContext[] {
     return this.room.roomStore.list.map( room => {
       return  {
+        roomNo: room.roomNo,
         roomName: room.roomName,
         roomId: room.roomId,
         password: room.password,

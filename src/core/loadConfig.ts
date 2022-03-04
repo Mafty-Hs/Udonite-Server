@@ -19,6 +19,7 @@ export function loadConfig(): ConfigContext{
     port: yaml.get('server.port'),
     url:  yaml.get('server.url'),
     maxRoomCount: Number(yaml.get('setting.maxRoomCount')),
+    roomPerPage: Number(yaml.get('setting.roomPerPage')),
     adminPassword: getTextHash(String(yaml.get('setting.adminPassword'))),
     imageStorageMaxSize: Number(yaml.get('storage.imageStorageMaxSize')),
     audioStorageMaxSize: Number(yaml.get('storage.audioStorageMaxSize'))

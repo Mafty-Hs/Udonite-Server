@@ -71,6 +71,7 @@ storage:
 setting:   
   adminPassword: 'yourOwnPassword' ← サーバ設置者がルームを強制削除するためのパスワード  
   maxRoomCount: 10 ← 最大ルーム数  
+  roomPerPage: 10 ← 1ページあたりに表示するルーム数  
 log:  
   filePath: './log/udonite.log' ← ログの保存先    
    

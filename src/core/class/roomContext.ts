@@ -9,6 +9,7 @@ export interface RoomInstance {
 }
 
 export class RoomContext {
+  roomNo: number = 0;
   roomName: string = '';
   password: string = '';
   isOpen: boolean = true;
@@ -16,6 +17,7 @@ export class RoomContext {
 }
 
 export interface RoomDataContext {
+  roomNo: number;
   roomId: string;
   roomName: string;
   lastAccess: number;
@@ -28,6 +30,7 @@ export interface RoomDataContext {
 }
 
 export class RoomListContext {
+  roomNo: number = 0;
   roomName: string = '';
   roomId: string = ''
   password: string = '';

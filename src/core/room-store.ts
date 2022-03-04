@@ -21,6 +21,7 @@ export class RoomStore {
   add(room :RoomContext):string {
     let roomId = randomUUID();
     this._roomStore[roomId] = {
+      roomNo: room.roomNo,
       roomId: roomId,
       roomName: room.roomName,
       lastAccess: Date.now(),
@@ -36,6 +37,7 @@ export class RoomStore {
   }
 
   dateUpdate(roomId :string):void {
+    if (!this._roomStore[roomId]) return;
     this._roomStore[roomId].lastAccess = Math.floor(Date.now() / 1000);
     this.save();
   }
@@ -56,6 +58,7 @@ export class RoomStore {
       return Object.keys(this._roomStore).map( roomId => {
         let room = this._roomStore[roomId]
         return  {
+          roomNo: room.roomNo,
           roomId: roomId,
           roomName: room.roomName,
           lastAccess: room.lastAccess,
