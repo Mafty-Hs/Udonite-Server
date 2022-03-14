@@ -78,8 +78,8 @@ export class Udonarium {
   }
 
   close() {
-    this.ObjectStore.close;
-    this.imageStorage.close;
-    this.audioStorage.close;
+    this.ObjectStore.close();
+    this.imageStorage.close();
+    this.audioStorage.close();
   }
 }

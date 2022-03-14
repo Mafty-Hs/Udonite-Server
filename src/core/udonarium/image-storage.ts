@@ -179,7 +179,7 @@ export class ImageStorage {
   }
 
   close() {
-    this.client.close;
+    this.client.close();
   }
 
 }

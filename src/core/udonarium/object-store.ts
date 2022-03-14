@@ -142,7 +142,7 @@ export class ObjectStore {
   }
 
   close() {
-    this.client.close;
+    this.client.close();
   }
 
   async waitLoad() {
