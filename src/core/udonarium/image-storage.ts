@@ -65,7 +65,7 @@ export class ImageStorage {
         owner: [owner],
         tag: []
       };
-      await this.imageStorage.insertOne(newDocument);
+      this.imageStorage.insertOne(newDocument);
       this.ImageMap.set(imageContext.identifier, imageContext);
     } 
     catch(error) {
