@@ -16,6 +16,8 @@ export interface configYamlContext {
   db: {
     ip: string,
     port: number
+    user: string,
+    password: string,
   }
   storage: {
     imageDataPath: string,

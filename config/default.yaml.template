@@ -4,6 +4,8 @@ server:
 db:
   ip: '127.0.0.1' 
   port: 27017
+  user: ''
+  password: ''
 storage:
   imageDataPath: '/localdata/image/'
   imageUrlPath: 'https://localhost.example/image/'
