@@ -59,8 +59,10 @@ server:
   port: 8000  ← サーバがlistenするポート 0.0.0.0：portでlistenします  
   url: 'https://localhost.example' ← CORSで認証するためのURL。ユーザーがクライアントにアクセスするためのURLを記載  
 db:  
-  ip: '127.0.0.1' ← mongodbにアクセスするためのIP  
-  port: 27017 ← もしmongodbのポートに変更があればここも変える  
+  ip: '127.0.0.1' ← mongodbにアクセスするためのIPまたはFQDN  
+  port: 27017 ← もしmongodbのポートに変更があればここも変える
+  user: '' ← mongodbに接続するためのユーザー(あれば) 
+  password: ''　← mongodbに接続するためのパスワード(あれば)    
 storage:  
   imageDataPath: '/localdata/image/'  ← Udonite-Serverが画像データを保存する先。実行ユーザーに書き込み権限が必要  
   imageUrlPath: 'https://localhost.example/image/'  ← ユーザーがimageDataPathにアクセスするためのURL  
