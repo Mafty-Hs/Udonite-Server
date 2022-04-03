@@ -48,7 +48,7 @@ export class AudioStorage {
       url: url,
       filesize: Number(filesize),
       owner: owner,
-      volume: 100,
+      volume: 50,
       isHidden: false
     };
     this.audioMap.set(audioContext.identifier, audioContext);
@@ -102,24 +102,24 @@ export class AudioStorage {
 }
 
 const PresetSound:AudioContext[] = [
-  { identifier: "dicePick", name: "dicePick" , type: ".mp3", url: './assets/sounds/soundeffect-lab/shoulder-touch1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "dicePut", name: "dicePut" , type: ".mp3", url: './assets/sounds/soundeffect-lab/book-stack1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "diceRoll1", name: "diceRoll1" , type: ".mp3", url: './assets/sounds/on-jin/spo_ge_saikoro_teburu01.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "diceRoll2", name: "diceRoll2" , type: ".mp3", url: './assets/sounds/on-jin/spo_ge_saikoro_teburu02.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "cardDraw", name: "cardDraw" , type: ".mp3", url: './assets/sounds/soundeffect-lab/card-turn-over1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "cardPick", name: "cardPick" , type: ".mp3", url: './assets/sounds/soundeffect-lab/shoulder-touch1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "cardPut", name: "cardPut" , type: ".mp3", url: './assets/sounds/soundeffect-lab/book-stack1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "cardShuffle", name: "cardShuffle" , type: ".mp3", url: './assets/sounds/soundeffect-lab/card-open1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "piecePick", name: "piecePick" , type: ".mp3", url: './assets/sounds/soundeffect-lab/shoulder-touch1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "piecePut", name: "piecePut" , type: ".mp3", url: './assets/sounds/soundeffect-lab/book-stack1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "blockPick", name: "blockPick" , type: ".wav", url: './assets/sounds/tm2/tm2_pon002.wav', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "blockPut", name: "blockPut" , type: ".wav", url: './assets/sounds/tm2/tm2_pon002.wav', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "lock", name: "lock" , type: ".wav", url: './assets/sounds/tm2/tm2_switch001.wav', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "unlock", name: "unlock" , type: ".wav", url: './assets/sounds/tm2/tm2_switch001.wav', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "sweep", name: "sweep" , type: ".wav", url: './assets/sounds/tm2/tm2_swing003.wav', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "puyon", name: "puyon" , type: ".mp3", url: './assets/sounds/soundeffect-lab/puyon1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "surprise", name: "surprise" , type: ".mp3", url: './assets/sounds/otologic/Onmtp-Surprise02-1.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "coinToss", name: "coinToss" , type: ".mp3", url: './assets/sounds/niconicomons/nc146227.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
-  { identifier: "alarm", name: "alarm" , type: ".mp3", url: './assets/sounds/alarm.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true},
+  { identifier: "dicePick", name: "dicePick" , type: ".mp3", url: './assets/sounds/soundeffect-lab/shoulder-touch1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "dicePut", name: "dicePut" , type: ".mp3", url: './assets/sounds/soundeffect-lab/book-stack1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "diceRoll1", name: "diceRoll1" , type: ".mp3", url: './assets/sounds/on-jin/spo_ge_saikoro_teburu01.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "diceRoll2", name: "diceRoll2" , type: ".mp3", url: './assets/sounds/on-jin/spo_ge_saikoro_teburu02.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "cardDraw", name: "cardDraw" , type: ".mp3", url: './assets/sounds/soundeffect-lab/card-turn-over1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "cardPick", name: "cardPick" , type: ".mp3", url: './assets/sounds/soundeffect-lab/shoulder-touch1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "cardPut", name: "cardPut" , type: ".mp3", url: './assets/sounds/soundeffect-lab/book-stack1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "cardShuffle", name: "cardShuffle" , type: ".mp3", url: './assets/sounds/soundeffect-lab/card-open1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "piecePick", name: "piecePick" , type: ".mp3", url: './assets/sounds/soundeffect-lab/shoulder-touch1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "piecePut", name: "piecePut" , type: ".mp3", url: './assets/sounds/soundeffect-lab/book-stack1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "blockPick", name: "blockPick" , type: ".wav", url: './assets/sounds/tm2/tm2_pon002.wav', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "blockPut", name: "blockPut" , type: ".wav", url: './assets/sounds/tm2/tm2_pon002.wav', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "lock", name: "lock" , type: ".wav", url: './assets/sounds/tm2/tm2_switch001.wav', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "unlock", name: "unlock" , type: ".wav", url: './assets/sounds/tm2/tm2_switch001.wav', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "sweep", name: "sweep" , type: ".wav", url: './assets/sounds/tm2/tm2_swing003.wav', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "puyon", name: "puyon" , type: ".mp3", url: './assets/sounds/soundeffect-lab/puyon1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "surprise", name: "surprise" , type: ".mp3", url: './assets/sounds/otologic/Onmtp-Surprise02-1.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "coinToss", name: "coinToss" , type: ".mp3", url: './assets/sounds/niconicomons/nc146227.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
+  { identifier: "alarm", name: "alarm" , type: ".mp3", url: './assets/sounds/alarm.mp3', filesize: 0, owner: 'SYSTEM', volume: 50, isHidden: true},
   { identifier: "pikon", name: "pikon" , type: ".mp3", url: './assets/sounds/soundeffect-lab/pikon.mp3', filesize: 0, owner: 'SYSTEM', volume: 100, isHidden: true}
 ];
