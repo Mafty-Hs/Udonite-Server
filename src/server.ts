@@ -272,6 +272,19 @@ class Server {
         ack(-1);
       }
     });
+    peer.on("roomUpdate",(message,ack) => {
+      let roomId = <string>this.ReverseRoomMap.get(peer.id); 
+      if (roomId) {
+        this.room.roomStore.update(roomId,message.roomName, message.password);
+        let roomInfo = this.roomInfo(roomId);
+        this.server.to(roomId).emit('ROOM_UPDATE', roomInfo);
+        ack(1);
+      }
+      else {
+        errorLog(peer.id + " not join Room");
+        ack(-1);
+      }
+    });
     peer.on("myCursor",(cursor :PeerCursor,ack) => {
       let roomId = <string>this.ReverseRoomMap.get(peer.id); 
       if (roomId) {
