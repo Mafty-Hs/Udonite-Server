@@ -32,11 +32,9 @@ export class Room {
     let roomId = this.roomStore.add(roomdata);
     let room = this.roomStore.read(roomId)
     await DBcreate(room.dbId);
-    systemLog("room create",roomId);
+    systemLog("room create",roomId,roomdata);
     return roomId;
   }
-
-
 
   sleep(roomId :string) {
     if (!this.roomInstance[roomId]) return;
