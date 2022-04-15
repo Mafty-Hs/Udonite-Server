@@ -8,3 +8,8 @@ export interface AudioContext {
   volume: number;
   isHidden: boolean;
 }
+
+export interface AudioUpdateContext {
+  context: AudioContext;
+  isUpsert: boolean; 
+}

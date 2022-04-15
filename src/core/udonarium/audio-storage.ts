@@ -1,13 +1,16 @@
+import { Collection, MongoClient, Document } from "mongodb";
 import { RoomDataContext } from "../class/roomContext";
 import { systemLog , errorLog } from "../../tools/logger";
-import { AudioContext } from "../class/audioContext";
+import { AudioContext, AudioUpdateContext } from "../class/audioContext";
 import { dirRemove, fileRemove } from "./storage";
 import fs from 'fs';
-import { ReturnDocument } from "mongodb";
 
 export class AudioStorage {
+  client!:MongoClient;
+  audioStorage!:Collection;
   room!:RoomDataContext;
   audioMap = new Map<string,AudioContext>();
+  audioDBMap:string[] = [];
   audioPath!:string;
   audioUrl!:string;
 
@@ -17,6 +20,7 @@ export class AudioStorage {
   }
 
   private async DBInit(dbId :string ,audioId :string) {
+    let MongoUri = <string>process.env.db ;
     this.audioPath = <string>process.env.audioDataPath + audioId;
     this.audioUrl = <string>process.env.audioUrlPath  + audioId;
     for (let context of PresetSound) {
@@ -24,6 +28,9 @@ export class AudioStorage {
     }
     try {
       if ( !fs.existsSync( this.audioPath )) fs.mkdirSync(this.audioPath);
+      this.client = await new MongoClient(MongoUri).connect()
+      this.audioStorage = this.client.db(dbId).collection('AudioStorage');
+      this.load();
     }
     catch(error) {
       errorLog("Room Init Failed",this.room.roomId, error);
@@ -55,9 +62,10 @@ export class AudioStorage {
     return audioContext;
   }
 
-  async update(context :AudioContext):Promise<AudioContext> {
+  async update(context :AudioContext):Promise<AudioUpdateContext> {
+    let upsert: boolean = !this.audioMap.has(context.identifier)
     this.audioMap.set(context.identifier, context);
-    return context;
+    return {context: context ,isUpsert: upsert};
   }
 
   async remove(identifier:string):Promise<void> {
@@ -94,8 +102,35 @@ export class AudioStorage {
     return this.audioUrl + "/" + filename;
   }
 
+  async load() {
+    systemLog("AudioMap load start" ,this.room.roomId);
+    try {
+      let alldocument = await this.audioStorage.find().toArray();
+      for (let document of alldocument) {
+        let doc = document as Document;
+        let context:AudioContext = {
+          identifier: doc.identifier,
+          name: doc.name,
+          type: doc.type,
+          url: doc.url,
+          filesize: doc.filesize,
+          owner: doc.owner,
+          volume: doc.volume,
+          isHidden: doc.isHidden,
+        }
+        this.audioDBMap.push(doc.identifier);
+        this.audioMap.set(context.identifier, context);
+      }
+    }
+    catch(error) {
+      errorLog("AudioMap load error" , this.room.roomId,error);
+    }
+    systemLog("AudioMap load end" ,this.room.roomId);
+    return;
+  }
 
   close() {
+    this.client.close();
     dirRemove(this.audioPath);
   }
 

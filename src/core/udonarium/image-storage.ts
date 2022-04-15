@@ -1,7 +1,7 @@
 import { Collection, MongoClient, Document, WithId,ObjectId } from "mongodb";
 import { RoomDataContext } from "../class/roomContext";
 import { systemLog , errorLog } from "../../tools/logger";
-import { ImageContext , ThumbnailContext} from "../class/imageContext";
+import { ImageContext, ImageUpdateContext,ThumbnailContext } from "../class/imageContext";
 import { fileRemove } from "./storage";
 import fs from 'fs';
 import sharp from "sharp";
@@ -74,15 +74,16 @@ export class ImageStorage {
     return imageContext;
   }
 
-  async update(context :ImageContext):Promise<ImageContext> {
+  async update(context :ImageContext):Promise<ImageUpdateContext> {
+    let upsert: boolean = !this.ImageMap.has(context.identifier)
     try {
-      await this.imageStorage.replaceOne({identifier: context.identifier},context)
+      await this.imageStorage.replaceOne({identifier: context.identifier} ,context ,{upsert: true})
       this.ImageMap.set(context.identifier, context);
     }
     catch(error) {
       errorLog("Image Update Error",this.room.roomId,error);
     }
-    return context;
+    return {context: context ,isUpsert: upsert};
   }
 
   async getMap():Promise<ImageContext[]> {

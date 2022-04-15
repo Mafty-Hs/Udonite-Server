@@ -9,6 +9,11 @@ export interface ImageContext {
   tag?: string[];
 }
 
+export interface ImageUpdateContext {
+  context: ImageContext;
+  isUpsert: boolean; 
+}
+
 export interface ThumbnailContext {
   type: string;
   url: string;

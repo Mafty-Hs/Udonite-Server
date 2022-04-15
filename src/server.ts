@@ -552,9 +552,14 @@ class Server {
       if (roomId) {
         try {
           this.room.room(roomId).imageStorage.update(context)
-            .then((event) => {
-              if (event) {
-                this.server.to(roomId).emit('IMAGE_UPDATE', event);
+            .then((result) => {
+              if (result) {
+                if (result.isUpsert) {
+                  this.server.to(roomId).emit('IMAGE_ADD', result.context);
+                }
+                else {
+                  this.server.to(roomId).emit('IMAGE_UPDATE', result.context);
+                }
               }
               ack(1);
             })
@@ -624,9 +629,14 @@ class Server {
       if (roomId) {
         try {
           this.room.room(roomId).audioStorage.update(context)
-            .then((event) => {
-              if (event) {
-                this.server.to(roomId).emit('AUDIO_UPDATE', event);
+            .then((result) => {
+              if (result) {
+                if (result.isUpsert) {
+                  this.server.to(roomId).emit('AUDIO_ADD', result.context);
+                }
+                else {
+                  this.server.to(roomId).emit('AUDIO_UPDATE', result.context);
+                }
               }
               ack(1);
             })
