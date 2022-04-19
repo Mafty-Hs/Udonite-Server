@@ -24,6 +24,7 @@ export class ObjectStore {
       let num = await this.ObjectStore.countDocuments();
       await this.refreshMap();
       await this.delete('Jukebox');
+      await this.delete('SoundEffect');
     }
     catch(error) {
       errorLog("ObjectStore Init Failed",this.room.roomId, error);

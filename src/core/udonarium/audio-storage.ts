@@ -55,7 +55,7 @@ export class AudioStorage {
       url: url,
       filesize: Number(filesize),
       owner: owner,
-      volume: 50,
+      volume: 100,
       isHidden: false
     };
     this.audioMap.set(audioContext.identifier, audioContext);
@@ -64,15 +64,38 @@ export class AudioStorage {
 
   async update(context :AudioContext):Promise<AudioUpdateContext> {
     let upsert: boolean = !this.audioMap.has(context.identifier)
-    this.audioMap.set(context.identifier, context);
+    if (upsert || this.audioDBMap.includes(context.identifier)) {
+      try {
+        await this.audioStorage.replaceOne({identifier: context.identifier} ,context ,{upsert: true});
+        this.audioDBMap.push(context.identifier);
+        this.audioMap.set(context.identifier, context);
+      }
+      catch(error) {
+        errorLog("Audio DB Update Error",this.room.roomId,error);
+      }
+    }
+    else {
+      this.audioMap.set(context.identifier, context);
+    }
     return {context: context ,isUpsert: upsert};
   }
 
   async remove(identifier:string):Promise<void> {
     if (!this.audioMap.has(identifier)) return;
-    let url = <string>this.audioMap.get(identifier)?.url
-    let filepath = this.audioPath + "/" + url.substring(this.audioUrl.length + 1)
-    fileRemove(filepath);
+    if (this.audioDBMap.includes(identifier)) {
+      this.audioDBMap = this.audioDBMap.filter(_identifier => _identifier != identifier);
+      try {
+        this.audioStorage.deleteOne({identifier: identifier});
+      }
+      catch(error) {
+        errorLog("Audio DB delete Error",this.room.roomId,error);
+      }
+    }
+    else {
+      let url = <string>this.audioMap.get(identifier)?.url
+      let filepath = this.audioPath + "/" + url.substring(this.audioUrl.length + 1)
+      fileRemove(filepath);
+    }
     this.audioMap.delete(identifier); 
   }
 
