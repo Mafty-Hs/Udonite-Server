@@ -9,7 +9,7 @@ export class AudioStorage {
   client!:MongoClient;
   audioStorage!:Collection;
   room!:RoomDataContext;
-  audioMap = new Map<string,AudioContext>();
+  audioMap!:Map<string,AudioContext>;
   audioDBMap:string[] = [];
   audioPath!:string;
   audioUrl!:string;
@@ -23,9 +23,6 @@ export class AudioStorage {
     let MongoUri = <string>process.env.db ;
     this.audioPath = <string>process.env.audioDataPath + audioId;
     this.audioUrl = <string>process.env.audioUrlPath  + audioId;
-    for (let context of PresetSound) {
-      this.audioMap.set(context.identifier, context)
-    }
     try {
       if ( !fs.existsSync( this.audioPath )) fs.mkdirSync(this.audioPath);
       this.client = await new MongoClient(MongoUri).connect()
@@ -100,6 +97,9 @@ export class AudioStorage {
   }
 
   async getMap():Promise<AudioContext[]> {
+    if (!this.audioMap) {
+      await this.waitLoad()
+    }
     let audioMap :AudioContext[] = [];
     for (let context of this.audioMap.values()) {
       audioMap.push(context);
@@ -107,6 +107,15 @@ export class AudioStorage {
     return audioMap;
   }
 
+  async waitLoad() {
+    if (this.audioMap) return;
+    systemLog("audioMap now loading! wait" ,this.room.roomId);
+    while (!this.audioMap) {
+      await new Promise(resolve => setTimeout(resolve, 200))
+    }
+    systemLog("audioMap wait end" ,this.room.roomId);
+    return;
+  }
 
   private async upload(file :ArrayBuffer, name :string, hash :string) {
     let filename = hash + '.' + name.split('.').pop();
@@ -127,6 +136,10 @@ export class AudioStorage {
 
   async load() {
     systemLog("AudioMap load start" ,this.room.roomId);
+    let audioMap = new Map<string,AudioContext>();
+    for (let context of PresetSound) {
+      audioMap.set(context.identifier, context)
+    }
     try {
       let alldocument = await this.audioStorage.find().toArray();
       for (let document of alldocument) {
@@ -142,12 +155,13 @@ export class AudioStorage {
           isHidden: doc.isHidden,
         }
         this.audioDBMap.push(doc.identifier);
-        this.audioMap.set(context.identifier, context);
+        audioMap.set(context.identifier, context);
       }
     }
     catch(error) {
       errorLog("AudioMap load error" , this.room.roomId,error);
     }
+    this.audioMap = audioMap;
     systemLog("AudioMap load end" ,this.room.roomId);
     return;
   }
