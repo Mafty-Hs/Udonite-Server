@@ -144,6 +144,16 @@ function makeImageContext():ImageContext[] {
       output.push(context);
     }
   }
+
+  let imagePathPrefix = '100_dice';
+  let faces = ['10','20','30','40','50','60','70','80','90','100'];
+  for (let face of faces){
+    let url: string = `./assets/images/dice/${imagePathPrefix}/${imagePathPrefix}[${face}].png`;
+    let context:ImageContext = 
+    { identifier: url , type: "/.png", url: url, thumbnail: systemThumnail, filesize: 0, isHide: true, owner: ["SYSTEM"], tag: ["default"] };
+    output.push(context);
+  }
+
   let suits: string[] = ['c', 'd', 'h', 's'];
   let trumps: string[] = [];
   for (let suit of suits) {
