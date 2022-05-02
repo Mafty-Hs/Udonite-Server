@@ -145,8 +145,8 @@ function makeImageContext():ImageContext[] {
     }
   }
 
-  let imagePathPrefix = '100_dice';
-  let faces = ['10','20','30','40','50','60','70','80','90','100'];
+  let imagePathPrefix:string = '100_dice';
+  let faces:string[] = ['10','20','30','40','50','60','70','80','90','100'];
   for (let face of faces){
     let url: string = `./assets/images/dice/${imagePathPrefix}/${imagePathPrefix}[${face}].png`;
     let context:ImageContext = 

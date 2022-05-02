@@ -60,6 +60,9 @@ export class RoomControl {
   disableAudioLoad:boolean = false;
   disableTableSetting:boolean = false;
   disableTabSetting:boolean = false;
+  disableSetCounter:boolean = false;
+  disableCutinSetting:boolean = false;
+  disableDiceRollSetting:boolean = false;
   disableAllDataSave:boolean = false;
   disableSeparateDataSave:boolean = false;
   gameType:string = "";
