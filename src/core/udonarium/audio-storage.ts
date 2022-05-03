@@ -4,6 +4,7 @@ import { systemLog , errorLog } from "../../tools/logger";
 import { AudioContext, AudioUpdateContext } from "../class/audioContext";
 import { dirRemove, fileRemove } from "./storage";
 import fs from 'fs';
+import { MimeType } from "../../tools/mime-type";
 
 export class AudioStorage {
   client!:MongoClient;
@@ -39,7 +40,7 @@ export class AudioStorage {
     let audioContext!:AudioContext;
     let url:string = ""
     try {
-      url = await this.upload(fileBuffer,name,hash)
+      url = await this.upload(fileBuffer,type,hash)
     }
     catch(error) {
       errorLog("Audio Upload Failed",this.room.roomId ,error);
@@ -117,8 +118,9 @@ export class AudioStorage {
     return;
   }
 
-  private async upload(file :ArrayBuffer, name :string, hash :string) {
-    let filename = hash + '.' + name.split('.').pop();
+  private async upload(file :ArrayBuffer, type :string, hash :string) {
+    let ext = MimeType.extension(type);
+    let filename = hash + '.' + ext;
     let writePath = this.audioPath + "/" + filename;
     try {
       let writeStream = fs.createWriteStream(writePath);

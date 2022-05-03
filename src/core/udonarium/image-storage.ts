@@ -5,6 +5,7 @@ import { ImageContext, ImageUpdateContext,ThumbnailContext } from "../class/imag
 import { fileRemove } from "./storage";
 import fs from 'fs';
 import sharp from "sharp";
+import { MimeType } from "../../tools/mime-type";
 
 export class ImageStorage {
   client!:MongoClient;
@@ -117,7 +118,8 @@ export class ImageStorage {
   }
 
   private async upload(file :ArrayBuffer, type :string, hash :string) {
-    let filename = hash + '.' + type.substring(type.indexOf('/') + 1)
+    let ext = MimeType.extension(type);
+    let filename = hash + '.' + ext;
     let writePath = this.imagePath + "/" + filename;
     try {
       let writeStream = fs.createWriteStream(writePath);
@@ -134,7 +136,8 @@ export class ImageStorage {
   }
 
   private async thumbnail(type :string, hash :string) {
-    let filename = hash + '.' + type.substring(type.indexOf('/') + 1)
+    let ext = MimeType.extension(type);
+    let filename = hash + '.' + ext;
     let thumbnail = await sharp(this.imagePath + "/" + filename)
       .resize({
         width: 128,
