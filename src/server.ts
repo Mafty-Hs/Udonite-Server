@@ -113,7 +113,9 @@ class Server {
         let hash = req.body.hash;
         let filesize = req.body.filesize;
         let owner = req.body.owner;
-        let event = await this.room.room(roomId).audioStorage.create(buf,name,type,hash,filesize,owner);
+        let tag:string = '';
+        if (req.body.tag) tag = req.body.tag;
+        let event = await this.room.room(roomId).audioStorage.create(buf,name,type,hash,filesize,owner,tag);
         if (event) {
           this.server.to(roomId).emit('AUDIO_ADD', event);
         }

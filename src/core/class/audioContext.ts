@@ -7,6 +7,7 @@ export interface AudioContext {
   owner: string;
   volume: number;
   isHidden: boolean;
+  tag?: string;
 }
 
 export interface AudioUpdateContext {
