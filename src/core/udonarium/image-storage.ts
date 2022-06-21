@@ -39,13 +39,27 @@ export class ImageStorage {
   async create(fileBuffer :ArrayBuffer ,type :string ,hash :string ,filesize :string ,owner :string):Promise<ImageContext|void> {
     if (!fileBuffer || this.ImageMap.get(hash)) return;
     let imageContext!:ImageContext;
+    let url!:string;
+    let thumbnailContext!:ThumbnailContext;
     try {
-      let url = await this.upload(fileBuffer,type,hash)
-       let thumbnail = await this.thumbnail(type,hash);
-      let thumbnailContext:ThumbnailContext = {
+      url = await this.upload(fileBuffer,type,hash);
+    }
+    catch(error) {
+      errorLog("Image Write Error",this.room.roomId,error);
+      return;
+    }
+    try {
+      let thumbnail = await this.thumbnail(type,hash);
+      thumbnailContext = {
         type:type,
         url: thumbnail
       };
+    }
+    catch(error) {
+      errorLog("Image Thumbnail Create Error",this.room.roomId,error);
+      thumbnailContext = {type: "" , url: ""};
+    }
+    try {
       imageContext = {
         identifier: hash ,
         type: type,
@@ -70,7 +84,7 @@ export class ImageStorage {
       this.ImageMap.set(imageContext.identifier, imageContext);
     } 
     catch(error) {
-      errorLog("Image Create Error",this.room.roomId,error);
+      errorLog("Image DB Write Error",this.room.roomId,error);
     }
     return imageContext;
   }
