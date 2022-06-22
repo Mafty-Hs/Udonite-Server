@@ -79,7 +79,8 @@ export class Round {
   count:number = 0;
   tabIdentifier:string = "";
   isInitiative:boolean = false;;
-  currentInitiative:number = -1;
+  currentInitiative:number = -999;
+  currentInitiativeNumber:number = -999;
   roundState:number = 0;
   initName:string = "";
 }
