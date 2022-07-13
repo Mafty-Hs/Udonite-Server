@@ -35,7 +35,7 @@ export class AudioStorage {
     }
   }
 
-  async create(fileBuffer :ArrayBuffer ,name :string ,type :string ,hash :string ,filesize :string ,owner :string ,tag? :string):Promise<AudioContext|void> {
+  async create(fileBuffer :ArrayBuffer ,name :string ,type :string ,hash :string ,filesize :string ,owner :string ,tag :string = "",isHidden :boolean = false):Promise<AudioContext|void> {
     if (!fileBuffer || this.audioMap.get(hash)) return;
     let audioContext!:AudioContext;
     let url:string = ""
@@ -54,8 +54,8 @@ export class AudioStorage {
       filesize: Number(filesize),
       owner: owner,
       volume: 100,
-      isHidden: false,
-      tag: tag ? tag : ""
+      isHidden: isHidden,
+      tag: tag 
     };
     this.audioMap.set(audioContext.identifier, audioContext);
     return audioContext;
