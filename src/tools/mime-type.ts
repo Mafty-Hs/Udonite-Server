@@ -1,14 +1,13 @@
 export namespace MimeType {
-
-  interface TypeContext {
-    [type: string]: string
-  }
-
-  const types:TypeContext = {
+  const types = {
+    avif: 'image/avif',
     gif: 'image/gif',
     jpg: 'image/jpeg',
     jpeg: 'image/jpeg',
     jpe: 'image/jpeg',
+    jfif: 'image/jpeg',
+    pjpeg: 'image/jpeg',
+    pjp: 'image/jpeg',
     png: 'image/png',
     apng: 'image/apng',
     webp: 'image/webp',
