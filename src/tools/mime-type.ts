@@ -1,5 +1,9 @@
 export namespace MimeType {
-  const types = {
+  interface TypeContext {
+    [type: string]: string
+  }
+
+  const types:TypeContext = {
     avif: 'image/avif',
     gif: 'image/gif',
     jpg: 'image/jpeg',
