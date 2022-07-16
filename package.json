@@ -1,6 +1,6 @@
 {
   "name": "udonite-server",
-  "version": "1.0.10",
+  "version": "1.0.10a",
   "description": "",
   "main": "index.js",
   "scripts": {
