@@ -1,14 +1,36 @@
+import { StorageClass } from '../class/storageClass';
+import { LocalStorage } from './storage/local-storage';
 
-import fs from 'fs';
+export class storage extends StorageClass {
+  constructor(storageType :string = '') {
+    super(storageType);
+    this.storage = new LocalStorage(storageType);
+    
+  }
 
-export function dirRemove(path :string) {
-  if (!path) return;
-  if ( !fs.existsSync( path )) return;
-  fs.rmSync(path, { recursive: true, force: true })
-}
+  private storage!:StorageClass;
+   
+  accessTest():boolean { return this.storage.accessTest() }
 
-export async function fileRemove(filePath :string) {
-  if (!filePath) return;
-  if ( !fs.existsSync( filePath )) return;
-  fs.rmSync(filePath, { force: true })
+  dirCreate(storageId :string):string {
+    if (!storageId) throw "invalid storageId";
+    return this.storage.dirCreate(storageId);
+  }
+
+  fileCreate(storageId :string, fileName :string, fileData :ArrayBuffer):Promise<string> {
+    if (!storageId) throw "invalid storageId";
+    if (!fileName || !fileData) throw "file is Null";
+    return this.storage.fileCreate(storageId, fileName, fileData);
+  }
+
+  dirRemove(storageId :string):boolean {
+    if (!storageId) throw "invalid storageId";
+    return this.storage.dirRemove(storageId);
+  }
+
+  fileRemove(storageId :string, fileName :string):Promise<boolean> {
+    if (!storageId) throw "invalid storageId";
+    if (!fileName) throw "file is Null";
+    return this.storage.fileRemove(storageId, fileName);
+  }
 }

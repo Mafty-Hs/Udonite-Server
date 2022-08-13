@@ -2,6 +2,7 @@ import config from 'config';
 import { getTextHash } from '../tools/file-tool';
 import { ConfigContext} from './class/system';
 import { systemLog , errorLog } from "../tools/logger";
+import { storage } from './udonarium/storage';
 
 interface databaseContext {
   ip :string;
@@ -19,11 +20,25 @@ export function loadConfig(): ConfigContext{
     port: yaml.has('db.port') ? yaml.get<string>('db.port') : "27017",
     user:  yaml.has('db.user') ? yaml.get<string>('db.user') : "",
     password: yaml.has('db.password') ? yaml.get<string>('db.password') : ""
-  });           
-  process.env.imageDataPath = yaml.get<string>('storage.imageDataPath'); 
-  process.env.imageUrlPath =  yaml.get<string>('storage.imageUrlPath');
-  process.env.audioDataPath =  yaml.get<string>('storage.audioDataPath');
-  process.env.audioUrlPath =  yaml.get<string>('storage.audioUrlPath');
+  });
+  let storageType = yaml.has('storage.storageType') ? yaml.get<number>('storage.storageType') : 1;
+  switch(storageType) {
+    case 2:
+      process.env.storageType = 's3';
+      break;
+    case 1:
+    default:
+      process.env.storageType = 'local';
+      process.env.imageDataPath = yaml.get<string>('storage.imageDataPath'); 
+      process.env.imageUrlPath =  yaml.get<string>('storage.imageUrlPath');
+      process.env.audioDataPath =  yaml.get<string>('storage.audioDataPath');
+      process.env.audioUrlPath =  yaml.get<string>('storage.audioUrlPath');
+  }
+  let tmpStorage = new storage('image');
+  if (!tmpStorage.accessTest()) {
+    throw "Cant access Storage";
+  }
+  systemLog('Storage access Successful')
   process.env.logFilePath =  yaml.get<string>('log.filePath');
 
   let result:ConfigContext =

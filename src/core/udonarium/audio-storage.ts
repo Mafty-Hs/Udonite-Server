@@ -2,8 +2,7 @@ import { Collection, MongoClient, Document } from "mongodb";
 import { RoomDataContext } from "../class/roomContext";
 import { systemLog , errorLog } from "../../tools/logger";
 import { AudioContext, AudioUpdateContext } from "../class/audioContext";
-import { dirRemove, fileRemove } from "./storage";
-import fs from 'fs';
+import { storage } from "./storage";
 import { MimeType } from "../../tools/mime-type";
 
 export class AudioStorage {
@@ -12,8 +11,9 @@ export class AudioStorage {
   room!:RoomDataContext;
   audioMap!:Map<string,AudioContext>;
   audioDBMap:string[] = [];
-  audioPath!:string;
+  audioId!:string;
   audioUrl!:string;
+  storage = new storage('audio');
 
   constructor(room :RoomDataContext) {
     this.room = room;
@@ -22,10 +22,10 @@ export class AudioStorage {
 
   private async DBInit(dbId :string ,audioId :string) {
     let MongoUri = <string>process.env.db ;
-    this.audioPath = <string>process.env.audioDataPath + audioId;
+    this.audioId = audioId;
     this.audioUrl = <string>process.env.audioUrlPath  + audioId;
     try {
-      if ( !fs.existsSync( this.audioPath )) fs.mkdirSync(this.audioPath);
+      this.storage.dirCreate(this.audioId);
       this.client = await new MongoClient(MongoUri).connect()
       this.audioStorage = this.client.db(dbId).collection('AudioStorage');
       this.load();
@@ -92,8 +92,8 @@ export class AudioStorage {
     }
     else {
       let url = <string>this.audioMap.get(identifier)?.url
-      let filepath = this.audioPath + "/" + url.substring(this.audioUrl.length + 1)
-      fileRemove(filepath);
+      let fileName = url.substring(this.audioUrl.length + 1)
+      this.storage.fileRemove(this.audioId,fileName);
     }
     this.audioMap.delete(identifier); 
   }
@@ -122,13 +122,8 @@ export class AudioStorage {
   private async upload(file :ArrayBuffer, type :string, hash :string) {
     let ext = MimeType.extension(type);
     let filename = hash + '.' + ext;
-    let writePath = this.audioPath + "/" + filename;
     try {
-      let writeStream = fs.createWriteStream(writePath);
-      await new Promise<void>((resolve,reject) => {
-        writeStream.write(file,'binary');
-        writeStream.end(resolve);
-      })  
+      await this.storage.fileCreate(this.audioId,filename,file);
     }
     catch(error) {
       errorLog("audio write error",this.room.roomId,error)
@@ -172,7 +167,7 @@ export class AudioStorage {
 
   close() {
     this.client.close();
-    dirRemove(this.audioPath);
+    this.storage.dirRemove(this.audioId);
   }
 
 }

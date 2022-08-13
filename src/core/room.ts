@@ -3,9 +3,12 @@ import { RoomStore } from "./room-store"
 import { Udonarium } from "./udonarium/udonarium";
 import { DBcreate , DBdrop } from "./db";
 import { systemLog , errorLog } from "../tools/logger";
-import { dirRemove } from "./udonarium/storage";
+import { storage } from "./udonarium/storage";
 
 export class Room {
+
+  imageStorage = new storage('image');
+  audioStorage = new storage('audio');
   
   constructer() {
   }
@@ -50,8 +53,8 @@ export class Room {
   async remove(roomId :string) {
     if (this.roomInstance[roomId]) return;
     let room = this.roomStore.read(roomId);
-    if (room.imageId) dirRemove(<string>process.env.imageDataPath + room.imageId);
-    if (room.audioId) dirRemove(<string>process.env.audioDataPath + room.audioId);
+    if (room.imageId) this.imageStorage.dirRemove(room.imageId);
+    if (room.audioId) this.imageStorage.dirRemove(room.audioId);
     DBdrop(room.dbId);
     this.roomStore.remove(roomId);
     systemLog("room remove",roomId);

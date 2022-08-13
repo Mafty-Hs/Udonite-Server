@@ -104,7 +104,7 @@ export class ObjectStore {
     }
     else {
       try {
-        await this.ObjectStore.insertOne(context);
+        await this.ObjectStore.replaceOne({identifier: objectIdentifier} ,context ,{upsert: true});
         this.ObjectMap.set(objectIdentifier,{identifier: objectIdentifier ,version: context.majorVersion + context.minorVersion});
       }
       catch(error) {

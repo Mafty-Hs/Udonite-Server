@@ -2,9 +2,7 @@ import { Collection, MongoClient, Document, WithId,ObjectId } from "mongodb";
 import { RoomDataContext } from "../class/roomContext";
 import { systemLog , errorLog } from "../../tools/logger";
 import { ImageContext, ImageUpdateContext,ThumbnailContext } from "../class/imageContext";
-import { fileRemove } from "./storage";
-import fs from 'fs';
-import sharp from "sharp";
+import { storage } from "./storage";
 import { MimeType } from "../../tools/mime-type";
 
 export class ImageStorage {
@@ -12,8 +10,9 @@ export class ImageStorage {
   imageStorage!:Collection;
   room!:RoomDataContext;
   ImageMap!:Map<string,ImageContext>;
-  imagePath!:string;
+  imageId!:string;
   imageUrl!:string;
+  storage = new storage('image');
 
   constructor(room :RoomDataContext) {
     this.room = room;
@@ -22,11 +21,10 @@ export class ImageStorage {
 
   private async DBInit(dbId :string ,imageId :string) {
     let MongoUri = <string>process.env.db ;
-    this.imagePath = <string>process.env.imageDataPath + imageId;
+    this.imageId = imageId;
     this.imageUrl = <string>process.env.imageUrlPath  + imageId;
     try {
-      if ( !fs.existsSync( this.imagePath )) fs.mkdirSync(this.imagePath);
-      if ( !fs.existsSync( this.imagePath + "/thumb" )) fs.mkdirSync(this.imagePath + "/thumb");
+      this.storage.dirCreate(this.imageId)
       this.client = await new MongoClient(MongoUri).connect();
       this.imageStorage = this.client.db(dbId).collection('ImageStorage');
       await this.load();
@@ -40,24 +38,16 @@ export class ImageStorage {
     if (!fileBuffer || this.ImageMap.get(hash)) return;
     let imageContext!:ImageContext;
     let url!:string;
-    let thumbnailContext!:ThumbnailContext;
+    let thumbnailContext:ThumbnailContext = {
+      type:type,
+      url: ''
+    };
     try {
       url = await this.upload(fileBuffer,type,hash);
     }
     catch(error) {
       errorLog("Image Write Error",this.room.roomId,error);
       return;
-    }
-    try {
-      let thumbnail = await this.thumbnail(type,hash);
-      thumbnailContext = {
-        type:type,
-        url: thumbnail
-      };
-    }
-    catch(error) {
-      errorLog("Image Thumbnail Create Error",this.room.roomId,error);
-      thumbnailContext = {type: "" , url: ""};
     }
     try {
       imageContext = {
@@ -115,8 +105,8 @@ export class ImageStorage {
   async remove(identifier:string):Promise<void> {
     if (!this.ImageMap.has(identifier)) return;
     let url = <string>this.ImageMap.get(identifier)?.url
-    let filepath = this.imagePath + "/" + url.substring(this.imageUrl.length + 1)
-    fileRemove(filepath);
+    let fileName = url.substring(this.imageUrl.length + 1)
+    this.storage.fileRemove(this.imageId,fileName);
     this.ImageMap.delete(identifier); 
     this.imageStorage.deleteOne({identifier: identifier});
   }
@@ -134,38 +124,14 @@ export class ImageStorage {
   private async upload(file :ArrayBuffer, type :string, hash :string) {
     let ext = MimeType.extension(type);
     let filename = hash + '.' + ext;
-    let writePath = this.imagePath + "/" + filename;
     try {
-      let writeStream = fs.createWriteStream(writePath);
-      await new Promise<void>((resolve,reject) => {
-        writeStream.write(file,'binary');
-        writeStream.end(resolve);
-      })  
+      await this.storage.fileCreate(this.imageId,filename,file);
     }
     catch(error) {
       errorLog("image write error",this.room.roomId,error)
       return "";
     }
     return this.imageUrl + "/" + filename;
-  }
-
-  private async thumbnail(type :string, hash :string) {
-    let ext = MimeType.extension(type);
-    let filename = hash + '.' + ext;
-    let thumbnail = await sharp(this.imagePath + "/" + filename)
-      .resize({
-        width: 128,
-        height: 128,
-        fit: "outside"
-      })
-      .toBuffer();
-    let writePath = this.imagePath + "/thumb/" + filename;
-    let writeStream = fs.createWriteStream(writePath);
-    await new Promise<void>((resolve,reject) => {
-      writeStream.write(thumbnail,'binary');
-      writeStream.end(resolve);
-    })  
-    return  this.imageUrl + "/" + "thumb/" + filename;
   }
 
   async load() {
