@@ -125,7 +125,7 @@ export class ImageStorage {
     let ext = MimeType.extension(type);
     let filename = hash + '.' + ext;
     try {
-      await this.storage.fileCreate(this.imageId,filename,file);
+      await this.storage.fileCreate(this.imageId,filename,type,file);
     }
     catch(error) {
       errorLog("image write error",this.room.roomId,error)

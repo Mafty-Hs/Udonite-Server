@@ -11,7 +11,7 @@ interface databaseContext {
   password :string;
 }
 
-export function loadConfig(): ConfigContext{
+export async function loadConfig(): Promise<ConfigContext>{
   systemLog("loading config");
   let yaml = config;
   process.env.NODE_ENV = "UdoniteServer";
@@ -25,6 +25,9 @@ export function loadConfig(): ConfigContext{
   switch(storageType) {
     case 2:
       process.env.storageType = 's3';
+      process.env.s3BucketName = yaml.has('storage.s3BucketName') ? yaml.get<string>('storage.s3BucketName') : "";
+      process.env.imageUrlPath =  yaml.get<string>('storage.s3UrlPath');
+      process.env.audioUrlPath =  yaml.get<string>('storage.s3UrlPath');
       break;
     case 1:
     default:

@@ -1,0 +1,10 @@
+{
+  "region": "us-east-1",
+  "credentials": {
+    "accessKeyId": "abcdefghijk",
+    "secretAccessKey": "abcdefghijk"
+  },
+  "endpoint": "https://127.0.0.1:9000",
+  "forcePathStyle": true
+}
+

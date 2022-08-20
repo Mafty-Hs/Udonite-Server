@@ -1,4 +1,5 @@
 *.yaml
+config/s3clientconfig.json
 roomstore.json
 *.log
 node_modules/

@@ -8,6 +8,8 @@ db:
   password: ''
 storage:
   storageType: 1 # 1:LocalStorage 2: ObjectStorage
+  s3BucketName: ''
+  s3UrlPath: ''
   imageDataPath: '/localdata/image/'
   imageUrlPath: 'https://localhost.example/image/'
   imageStorageMaxSize: 50  #MBtyte

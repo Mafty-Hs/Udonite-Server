@@ -123,7 +123,7 @@ export class AudioStorage {
     let ext = MimeType.extension(type);
     let filename = hash + '.' + ext;
     try {
-      await this.storage.fileCreate(this.audioId,filename,file);
+      await this.storage.fileCreate(this.audioId,filename,type,file);
     }
     catch(error) {
       errorLog("audio write error",this.room.roomId,error)

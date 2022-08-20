@@ -14,7 +14,7 @@ import multer from 'multer';
 
 
 class Server {
-  config:ConfigContext;
+  config!:ConfigContext;
   _express = express();
   httpd: http.Server = http.createServer(this._express);
   server!: socketio.Server;
@@ -24,7 +24,11 @@ class Server {
   ReverseRoomMap:Map<string, string> = new Map<string, string>();
   
   constructor() {
-    this.config = loadConfig();
+    this.init()
+  }
+
+  async init() {
+    this.config = await loadConfig();
     this.server = new socketio.Server(this.httpd,
           {
       cors: {
@@ -33,10 +37,6 @@ class Server {
         credentials: true }
        }
     );
-    this.init()
-  }
-
-  async init() {
     process.on("exit", exitCode => {
       this.close();
       systemLog("Udonite Shutdown");

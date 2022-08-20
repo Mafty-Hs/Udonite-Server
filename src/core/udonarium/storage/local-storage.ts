@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { StorageClass } from '../../class/storageClass';
+import { systemLog , errorLog } from "../../../tools/logger";
 
 export class LocalStorage extends StorageClass {
   constructor(storageType :string = '') {
@@ -18,7 +19,8 @@ export class LocalStorage extends StorageClass {
   
   basePath:string = '' ;
   
-  accessTest():boolean { 
+  accessTest():Promise<boolean>  { 
+    let result = false;
     let imagePath = <string>process.env.imageDataPath + '/' + "access.txt";
     let audioPath = <string>process.env.audioDataPath + '/' + "access.txt";
     try{
@@ -26,45 +28,52 @@ export class LocalStorage extends StorageClass {
       fs.writeFileSync( audioPath, "test");
       fs.rmSync(imagePath, { force: true });
       fs.rmSync(audioPath, { force: true });
+      result = true;
     }
     catch(e){
-      return false;
+      systemLog('LocalStorage access error','',e)
     }
-    return true;
+    return new Promise<boolean>((resolve,reject) => {
+      resolve(result);
+    })
   }
 
-  dirCreate(storageId :string):string {
+  dirCreate(storageId :string):Promise<string>  {
     let path = this.basePath + '/' + storageId;
-    if ( fs.existsSync( path )) return '';
-    fs.mkdirSync(path);
-    return path;
+    return new Promise<string>((resolve,reject) => {
+      if ( fs.existsSync( path )) resolve('');
+      fs.mkdirSync(path);
+      resolve(path);
+    })
   }
 
-  fileCreate(storageId :string, fileName :string, fileData :ArrayBuffer):Promise<string> {
+  fileCreate(storageId :string, fileName :string, mimeType :string,fileData :ArrayBuffer):Promise<string> {
     let filePath =  this.basePath + '/' + storageId + '/' + fileName;
     let writeStream = fs.createWriteStream(filePath);
     return new Promise<string>((resolve,reject) => {
         writeStream.write(fileData,'binary');
         writeStream.end(resolve);
+        resolve(filePath);
     })
   }
 
-  dirRemove(storageId :string):boolean {
+  dirRemove(storageId :string):Promise<boolean> {
     let path = this.basePath + '/' + storageId;
-    if ( !fs.existsSync( path )) return false;
-    fs.rmSync(path, { recursive: true, force: true });
-    return true;
+    return new Promise<boolean>((resolve,reject) => {
+      if ( !fs.existsSync( path )) resolve(false);
+      fs.rmSync(path, { recursive: true, force: true });
+      resolve(true);
+    })
   }
 
   fileRemove(storageId :string, fileName :string):Promise<boolean> {
     let filePath = this.basePath + '/' + storageId + '/' + fileName;
-    if ( !fs.existsSync( filePath )) new Promise<boolean>((resolve,reject) => {
-      return false;
-    })
-    fs.rmSync(filePath, { force: true });
     return new Promise<boolean>((resolve,reject) => {
-      return true;
+      if ( !fs.existsSync( filePath )) resolve(false);
+      fs.rmSync(filePath, { force: true });
+      resolve(true);
     })
   }
+  
 }
 
