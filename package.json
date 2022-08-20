@@ -1,6 +1,6 @@
 {
   "name": "udonite-server",
-  "version": "1.0.10a",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "ws": "^8.2.3"
   },
   "devDependencies": {
-    "@types/config": "^0.0.41",
+    "@types/config": "^3.3.0",
     "@types/crypto-js": "^4.1.0",
     "@types/express": "^4.17.13",
     "@types/multer": "^1.4.7",
