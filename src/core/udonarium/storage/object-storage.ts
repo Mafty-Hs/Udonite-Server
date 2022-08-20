@@ -51,7 +51,7 @@ export class ObjectStorage extends StorageClass {
   private async _dirCreate(storageId :string):Promise<string> {
     const objects = await this.getObjects(storageId);
     if (!objects) {
-      return this.objectCreate(storageId,'text/plain','testfile.txt')
+      return this.objectCreate(storageId,'testfile.txt','text/plain')
     }
     return storageId;
   }
