@@ -14,7 +14,7 @@ linux（開発環境はCentOS7.9）
 (開発環境はv5.0.5)  
 データ収納先  
 必須  
-* webサーバ  
+* webサーバ または オブジェクトストレージ(試験実装)
 (開発環境はnginx)  
 画像や音楽の共有に使用   
    
@@ -46,7 +46,8 @@ Udonite-Server自身の設置フォルダはWEBで公開しないでください
   
  パスは各自の環境にあわせ変更してください。  
  また、Udonite-Server実行ユーザーが上記のフォルダに書き込めるように権限を付与してください  
- またWebで上記フォルダに直接アクセスできるように設定します  
+ またWebで上記フォルダに直接アクセスできるように設定します 
+ オブジェクトストレージを使用する際にはs3clientconfig.jsonに設定を記載してください 
   
 configの設定  
  詳細は後述  
@@ -64,6 +65,9 @@ db:
   user: '' ← mongodbに接続するためのユーザー(あれば) 
   password: ''　← mongodbに接続するためのパスワード(あれば)    
 storage:  
+  storageType: 1 # 1:LocalStorage 2: ObjectStorage  ← 使用するストレージ  
+  s3BucketName: ''  ← オブジェクトストレージを使用する際のバケット名  
+  s3UrlPath: ''  ← オブジェクトストレージが外部へファイルを公開するときのURL  
   imageDataPath: '/localdata/image/'  ← Udonite-Serverが画像データを保存する先。実行ユーザーに書き込み権限が必要  
   imageUrlPath: 'https://localhost.example/image/'  ← ユーザーがimageDataPathにアクセスするためのURL  
   imageStorageMaxSize: 10  #MByte   ← 1部屋あたりの画像データ上限  
